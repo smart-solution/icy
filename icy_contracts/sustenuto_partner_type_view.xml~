@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <!--
+       sustenuto_partner_type Views 
+   -->
+
+    <record model="ir.ui.view" id="view_sustenuto_partner_type_tree">
+        <field name="name">view.sustenuto_partner_type.tree</field>
+        <field name="model">sustenuto.partner.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="sustenuto_partner_type">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sustenuto_partner_type_form">
+        <field name="name">view.sustenuto_partner_type.form</field>
+        <field name="model">sustenuto.partner.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="sustenuto_partner_type">
+		<field name="name"/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sustenuto_partner_type">
+        <field name="name">All Partner Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sustenuto.partner.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sustenuto_partner_type_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sustenuto_partner_type_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sustenuto_partner_type_tree"/>
+        <field name="act_window_id" ref="action_sustenuto_partner_type"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sustenuto_partner_type_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sustenuto_partner_type_form"/>
+        <field name="act_window_id" ref="action_sustenuto_partner_type"/>
+    </record>
+
+    <menuitem name="Partner Types" id="menu_partner_type_form" action="action_sustenuto_partner_type" parent = "base.menu_address_book" sequence="3"/>
+
+    </data>
+</openerp>
+

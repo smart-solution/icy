@@ -1,0 +1,309 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+##############################################################################
+
+from openerp.osv import osv, fields
+import datetime
+from datetime import timedelta
+from datetime import date
+
+class crm_case_section(osv.osv):
+    _name = 'crm.case.section'
+    _inherit = 'crm.case.section'
+
+    _columns = {
+        'helpdesk_category': fields.boolean('Helpdesk Category'),
+    }
+
+crm_case_section()
+
+class crm_case_categ(osv.osv):
+    _name = 'crm.case.categ'
+    _inherit = 'crm.case.categ'
+
+    _columns = {
+        'probleem': fields.boolean('Probleem'),
+        'uitleg': fields.boolean('Uitleg'),
+        'reparatie': fields.boolean('Reparatie'),
+        'algemeen': fields.boolean('Algemeen'),
+        'klacht': fields.boolean('Klacht'),
+        'logistiek': fields.boolean('Logistiek'),
+        'product_ids': fields.many2many('product.product', 'product_case_categ_rel', 'case_categ_id', 'product_id', 'Products'),
+        'email_template_ids': fields.many2many('email.template', 'mail_template_case_categ_rel', 'case_categ_id', 'email_template_id', 'Email Templates'),
+    }
+
+crm_case_categ()
+
+class product_product(osv.osv):
+    _name = 'product.product'
+    _inherit = 'product.product'
+
+    _columns = {
+        'case_categ_ids': fields.many2many('crm.case.categ', 'product_case_categ_rel', 'product_id', 'case_categ_id', 'Helpdesk Categories'),
+    }
+
+product_product()
+
+class crm_helpdesk(osv.osv):
+    _name = 'crm.helpdesk'
+    _inherit = 'crm.helpdesk'
+
+    def onchange_categ_id(self, cr, uid, ids, categ_id, context=None):
+        res = {}
+        categ_obj = self.pool.get('crm.case.categ')
+        categ = categ_obj.browse(cr, uid, categ_id, context=context)
+        print 'CATEG:',categ.name
+        res['name'] = categ.name
+        res['omruil'] = False
+        if res['name'].find('omruil') > 0:
+            print 'OMRUIL'
+            res['omruil'] = True
+        product_ids = []
+        for product in categ.product_ids:
+            product_ids.append(product.id)
+        res['product_ids'] = product_ids
+        template_ids = []
+        for template in categ.email_template_ids:
+            template_ids.append(template.id)
+        res['email_template_ids'] = template_ids
+        return {'value':res}
+
+    def onchange_categ2_id(self, cr, uid, ids, categ_id, context=None):
+        res = {}
+        categ_obj = self.pool.get('crm.case.categ')
+        categ = categ_obj.browse(cr, uid, categ_id, context=context)
+        template_ids = []
+        for template in categ.email_template_ids:
+            template_ids.append(template.id)
+        res['email_template2_ids'] = template_ids
+        return {'value':res}
+
+    def onchange_categ3_id(self, cr, uid, ids, categ_id, context=None):
+        res = {}
+        categ_obj = self.pool.get('crm.case.categ')
+        categ = categ_obj.browse(cr, uid, categ_id, context=context)
+        template_ids = []
+        for template in categ.email_template_ids:
+            template_ids.append(template.id)
+        res['email_template3_ids'] = template_ids
+        return {'value':res}
+
+    def onchange_categ4_id(self, cr, uid, ids, categ_id, context=None):
+        res = {}
+        categ_obj = self.pool.get('crm.case.categ')
+        categ = categ_obj.browse(cr, uid, categ_id, context=context)
+        template_ids = []
+        for template in categ.email_template_ids:
+            template_ids.append(template.id)
+        res['email_template4_ids'] = template_ids
+        return {'value':res}
+
+    def onchange_categ5_id(self, cr, uid, ids, categ_id, context=None):
+        res = {}
+        categ_obj = self.pool.get('crm.case.categ')
+        categ = categ_obj.browse(cr, uid, categ_id, context=context)
+        template_ids = []
+        for template in categ.email_template_ids:
+            template_ids.append(template.id)
+        res['email_template5_ids'] = template_ids
+        return {'value':res}
+
+    def icy_onchange_partner_id(self, cr, uid, ids, partner_id, email_from, context=None):
+        res = {}
+        if partner_id:
+            print 'PARTNER_ID:',partner_id
+            partner_obj = self.pool.get('res.partner')
+            partner = partner_obj.browse(cr, uid, partner_id, context=context)
+            res['address'] = partner.street + ", " + partner.zip + " " + partner.city
+            if partner.email:
+                res['address'] = res['address'] + " - " + partner.email
+            print 'ADDRESS:',res['address']
+            res['email_from'] = partner.email
+        else:
+            res['address'] = ""
+            res['email_from'] = ""
+        return {'value':res}
+
+    def onchange_zip(self, cr, uid, ids, cust_zip, context=None):
+        res = {}
+        if cust_zip:
+            sql_stat = "select id as street_id, name, city_id from res_country_city_street where replace(zip, ' ', '') = replace('%s', ' ', '')" % (cust_zip, )
+            print sql_stat
+            cr.execute(sql_stat)
+            sql_res = cr.dictfetchone()
+            if sql_res['street_id']:
+                res['street_id'] = sql_res['street_id']
+                res['zip_id'] = sql_res['city_id']
+                res['cust_street'] = sql_res['name']
+                city_obj = self.pool.get('res.country.city')
+                city = city_obj.browse(cr, uid, sql_res['city_id'], context=context)
+                res['cust_city'] = city.name
+#                res['cust_zip'] = cust_zip[0:4] + " " + cust_zip[4:]
+                res['address'] = sql_res['name'] + ", " + city.name
+
+        return {'value':res}
+
+    def onchange_street_id(self, cr, uid, ids, zip_id, street_id, street_nbr, context=None):
+        res = {}
+        sql_stat = "select id as partner_id, name, street, zip, city from res_partner where zip_id =  %d and street_id = %d and trim(street_nbr) = trim('%s')" % (zip_id, street_id, street_nbr, )
+        print sql_stat
+        cr.execute(sql_stat)
+        sql_res = cr.dictfetchone()
+        if sql_res:
+            if sql_res['partner_id']:
+                res['partner_id'] = sql_res['partner_id']
+                res['cust_name'] = sql_res['name']
+                res['address'] = sql_res['street'] + ", " + sql_res['zip'] + " " + sql_res['city']
+
+#        if not street_id:
+#            res['cust_street'] = ""
+#        else:
+#            street_obj = self.pool.get('res.country.city.street')
+#            street = street_obj.browse(cr, uid, street_id, context=context)
+#            if street_nbr:
+#                res['cust_street'] = street.name + ' ' + street_nbr
+#            else:
+#                res['cust_street'] = street.name
+
+        return {'value':res}
+
+    def onchange_create_partner(self, cr, uid, ids, partner_id, cust_name, cust_street, cust_zip, cust_city, cust_phone, cust_email, zip_id, street_id, street_nbr, first_name, middle_name, last_name, context=None):
+        res = {}
+        if not partner_id:
+            print "BUTTON CREATE PARTNER"
+            obj_partner = self.pool.get('res.partner')
+
+            vals_partner = {}
+            vals_partner['name'] = cust_name
+            vals_partner['lang'] = "nl_NL"
+            vals_partner['company_id'] = 1
+            vals_partner['use_parent_address'] = False
+            vals_partner['active'] = True
+            vals_partner['street'] = cust_street
+            vals_partner['supplier'] = False
+            vals_partner['city'] = cust_city
+            vals_partner['zip'] = cust_zip
+            vals_partner['employee'] = False
+            vals_partner['type'] = "contact"
+            vals_partner['email'] = cust_email
+            vals_partner['phone'] = cust_phone
+            vals_partner['customer'] = False
+            vals_partner['is_company'] = False
+            vals_partner['notification_email_send'] = "comment"
+            vals_partner['opt_out'] = False
+            vals_partner['display_name'] = cust_name
+            vals_partner['purchase_warn'] = "no-message"
+            vals_partner['sale_warn'] = "no-message"
+            vals_partner['invoice_warn'] = "no-message"
+            vals_partner['picking-warn'] = "no-message"
+            vals_partner['received_via'] = False
+            vals_partner['consumer'] = True
+            vals_partner['subcontractor'] = False
+            vals_partner['zip_id'] = zip_id
+            vals_partner['street_id'] = street_id
+            vals_partner['street_nbr'] = street_nbr
+            vals_partner['first_name'] = first_name
+            vals_partner['middle_name'] = middle_name
+            vals_partner['last_name'] = last_name
+ 
+            partner_id = obj_partner.create(cr, uid, vals=vals_partner, context=context)
+            res['partner_id'] = partner_id
+        return {'value':res}
+
+    _defaults = {
+        'omruil_retour_date': (date.today() + timedelta(days=21)).strftime('%Y-%m-%d')
+    }
+
+    _columns = {
+		'stock_move_ids': fields.one2many('stock.move', 'helpdesk_id', 'Stock Moves'),
+		'received_via_id': fields.many2one('res.partner', 'Aangeschaft Bij', select=True),
+		'serial_nbr1': fields.many2one('stock.production.lot', 'Serienummer 1', select=True),
+		'serial_nbr2': fields.many2one('stock.production.lot', 'Serienummer 2', select=True),
+        'additional_sns': fields.boolean('Meer Serienummers'),
+        'serial_nbr_ids': fields.many2many('stock.production.lot', 'helpdesk_serial_nbr_rel', 'serial_nbr_id', 'helpdesk_id', 'Serienummers'),
+		'product_id': fields.many2one('product.product', 'Toe Te Zenden', select=True),
+        'address': fields.char('Adres', len=124, readonly=True, store=True),
+		'incoming_via_id': fields.many2one('res.partner', 'Binnengekomen Via', select=True),
+		'categ2_id': fields.many2one('crm.case.categ', 'Service Categorie 2', select=True, domain="['|',('section_id','=',False),('section_id','=',section_id),('object_id.model', '=', 'crm.helpdesk')]"),
+		'categ3_id': fields.many2one('crm.case.categ', 'Service Categorie 3', select=True, domain="['|',('section_id','=',False),('section_id','=',section_id),('object_id.model', '=', 'crm.helpdesk')]"),
+		'categ4_id': fields.many2one('crm.case.categ', 'Service Categorie 4', select=True, domain="['|',('section_id','=',False),('section_id','=',section_id),('object_id.model', '=', 'crm.helpdesk')]"),
+		'categ5_id': fields.many2one('crm.case.categ', 'Service Categorie 5', select=True, domain="['|',('section_id','=',False),('section_id','=',section_id),('object_id.model', '=', 'crm.helpdesk')]"),
+		'task_user': fields.many2one('res.users', 'Taak Voor', select=True),
+        'task_date': fields.date('Deadline'),
+        'task_description': fields.char('Actieomschrijving', len=124),
+        'omruil': fields.boolean('Logistiek'),
+        'call_transfer': fields.boolean('Doorverbinden'),
+        'call_transfer_user_id': fields.many2one('res.users', 'Doorverbinden Naar', select=True),
+		'email_template_id': fields.many2one('email.template', 'Email Template', select=True),
+		'email_template2_id': fields.many2one('email.template', 'Email Template 2', select=True),
+		'email_template3_id': fields.many2one('email.template', 'Email Template 3', select=True),
+		'email_template4_id': fields.many2one('email.template', 'Email Template 4', select=True),
+		'email_template5_id': fields.many2one('email.template', 'Email Template 5', select=True),
+        'omruil_retour_date': fields.date('Omruil Retour Datum'),
+        'product_ids': fields.related('categ_id', 'product_ids', type="many2many", obj="product.product"),
+        'email_template_ids': fields.related('categ_id', 'email_template_ids', type="many2many", obj="email.template"),
+        'email_template2_ids': fields.related('categ2_id', 'email_template_ids', type="many2many", obj="email.template"),
+        'email_template3_ids': fields.related('categ3_id', 'email_template_ids', type="many2many", obj="email.template"),
+        'email_template4_ids': fields.related('categ4_id', 'email_template_ids', type="many2many", obj="email.template"),
+        'email_template5_ids': fields.related('categ5_id', 'email_template_ids', type="many2many", obj="email.template"),
+		'zip_id': fields.many2one('res.country.city', 'Postcode'),
+		'street_id': fields.many2one('res.country.city.street', 'Straat'),
+		'street_nbr': fields.char('Nummer', size=16),
+        'cust_name': fields.char('Relatienaam', len=124),
+        'cust_street': fields.char('Straat', len=124),
+        'cust_zip': fields.char('Postcode', len=24),
+        'cust_city': fields.char('Gemeente', len=124),
+        'cust_phone': fields.char('Telefoon', len=124),
+        'cust_email': fields.char('Email', len=124),
+        'create_partner': fields.boolean('Relatie Aanmaken'),
+        'first_name': fields.char('Voornaam', len=24),
+        'middle_name': fields.char('Mid. Naam', len=24),
+        'last_name': fields.char('Achternaam', len=24),
+        'essent_ref': fields.char('Essent Klantnummer', len=24),
+        'gender': fields.selection([('m','Man'),('f','Vrouw')], string='Geslacht', size=1),
+    }
+
+crm_case_section()
+
+class stock_move(osv.osv):
+    _name = 'stock.move'
+    _inherit = 'stock.move'
+
+    _columns = {
+		'helpdesk_id': fields.many2one('crm.helpdesk', 'Helpdesk Call', select=True),
+    }
+
+stock_move()
+
+class res_partner(osv.osv):
+    _name = 'res.partner'
+    _inherit = 'res.partner'
+
+    _columns = {
+		'helpdesk_ids': fields.one2many('crm.helpdesk', 'partner_id', ''),
+		'received_via': fields.boolean('Received Via'),
+		'consumer': fields.boolean('Consumers'),
+		'incoming_service_call': fields.boolean('Incoming Service Call'),
+        'first_name': fields.char('Voornaam', len=24),
+        'middle_name': fields.char('Mid. Naam', len=24),
+        'last_name': fields.char('Achternaam', len=24),
+        'essent_ref': fields.char('Essent Klantnummer', len=24),
+        'gender': fields.selection([('m','Man'),('f','Vrouw')], string='Geslacht', size=1),
+    }
+
+res_partner()
+
+class product_product(osv.osv):
+    _name = 'product.product'
+    _inherit = 'product.product'
+
+    _columns = {
+		'helpdesk_retour': fields.boolean('Helpdesk Retour'),
+    }
+
+product_product()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

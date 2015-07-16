@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_coda_fys_file_user,access.account.coda.fys.file.user,model_account_coda_fys_file,natuurpunt_coda.group_natuurpunt_coda_user,1,1,1,1
+access_account_bank_statement_user,access.account.bank.statement.user,model_account_bank_statement,natuurpunt_coda.group_natuurpunt_coda_user,1,1,1,1
+access_account_bank_statement_line_user,access.account.bank.statement.line.user,model_account_bank_statement_line,natuurpunt_coda.group_natuurpunt_coda_user,1,1,1,1

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+    <record model="ir.ui.view" id="icy_partner_history_form">
+      <field name="name">icy.partner.history.form</field>
+      <field name="model">res_partner_history</field>
+      <field name="priority">1</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Partner Contacten">
+          <field name="partner_id" select="1"/>
+          <field name="partner_name" select="1" invisible="1"/>
+          <field name="date" select="1" widget="date"/>
+	  <field name="type" select="1"/>
+          <field name="description" select="1"/>
+          <field name="reference" select="1"/>
+          <field name="user_id" select="1"/>
+          <field name="amount" select="1"/>
+          <field name="state" select="1"/>
+          <field name="sale_order_id" select="1"/>
+          <field name="purchase_order_id" select="1"/>
+          <field name="stock_picking_id" select="1"/>
+          <field name="account_invoice_id" select="1"/>
+          <field name="crm_helpdesk_id" select="1"/>
+          <field name="payment_order_id" select="1"/>
+          <field name="crm_meeting_id" select="1"/>
+          <field name="crm_phonecall_id" select="1"/>
+          <field name="crm_lead_id" select="1"/>
+          <field name="task_id" select="1"/>
+          <field name="message_id" select="1"/>
+        </form>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="icy_partner_history_list">
+      <field name="name">icy.partner.history.list</field>
+      <field name="model">res_partner_history</field>
+      <field name="priority">1</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Partner Contacten">
+          <field name="partner_id" select="1" invisible="1"/>
+          <field name="partner_name" select="1" invisible="1"/>
+          <field name="date" select="1" widget="date"/>
+	  <field name="type" select="1"/>
+          <field name="description" select="1"/>
+          <field name="reference" select="1"/>
+          <field name="user_id" select="1"/>
+          <field name="amount" select="1"/>
+          <field name="state" select="1"/>
+          <field name="sale_order_id" select="1" invisible="1"/>
+          <field name="purchase_order_id" select="1" invisible="1"/>
+          <field name="stock_picking_id" select="1" invisible="1"/>
+          <field name="account_invoice_id" select="1" invisible="1"/>
+          <field name="crm_helpdesk_id" select="1" invisible="1"/>
+          <field name="payment_order_id" select="1" invisible="1"/>
+          <field name="crm_meeting_id" select="1" invisible="1"/>
+          <field name="crm_phonecall_id" select="1" invisible="1"/>
+          <field name="crm_lead_id" select="1" invisible="1"/>
+          <field name="task_id" select="1" invisible="1"/>
+          <field name="message_id" select="1" invisible="1"/>
+          <field name="customer" select="1" invisible="1"/>
+          <field name="supplier" select="1" invisible="1"/>
+          <field name="consumer" select="1" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="icy_partner_history_search">
+        <field name="name">icy.partner.history.search</field>
+        <field name="model">res_partner_history</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Search">                 
+		<group expand="0" string="Selection...">
+                    <field name="partner_id" select='1'/>
+		</group>
+                <separator/>
+                <filter string="Klanten" name="customer" domain="[['customer','=',True]]"/>
+                <filter string="Leveranciers" name="supplier" domain="[['supplier','=',True]]"/>
+                <filter string="Consumers" name="consumer" domain="[['consumer','=',True]]"/>
+                <separator/>
+                <group expand="0" string="Group By...">
+                    <filter string="Partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Type" context="{'group_by':'type'}"/>
+                    <filter string="Date" context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="icy_partner_history_act1">
+      <field name="name">Partner Contacten</field>
+      <field name="res_model">res_partner_history</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="icy_partner_history_list"/>
+      <field name="search_view_id" ref="icy_partner_history_search"/>
+      <field name="context">{"search_default_customer":1}</field> 
+    </record>
+    <record model="ir.actions.act_window.view" id="icy_partner_history_act1_view2">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="icy_partner_history_list"/>
+      <field name="act_window_id" ref="icy_partner_history_act1"/>
+    </record>
+    <record model="ir.actions.act_window.view" id="icy_partner_history_act1_view1">
+      <field name="sequence" eval="2"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="icy_partner_history_form"/>
+      <field name="act_window_id" ref="icy_partner_history_act1"/>
+    </record>
+    <menuitem
+      action="icy_partner_history_act1"
+      id="menu_icy_partner_history_list"
+      parent="base.menu_sales"
+      sequence="130"/>
+
+<!--    <record model="ir.ui.view" id="icy_view_partner_history_form">
+        <field name="name">icy.view.partner.history.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="crm.view_partners_form_crm1"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <page string="Contacts" position="after">
+                <page string="Geschiedenis">
+                    <field name="partner_history_ids" context="{'default_partner_id':active_id}" readonly="True"/>
+		</page>
+	    </page>
+	</field>
+    </record> -->
+
+  </data>
+</openerp>

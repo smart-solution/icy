@@ -1,0 +1,152 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* icy_sale_webkit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-05 08:01+0000\n"
+"PO-Revision-Date: 2014-08-05 08:01+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:84
+msgid "Invoice address"
+msgstr "Faktuuradres"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:185
+msgid "Unit Price"
+msgstr "Prijs"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:188
+msgid "Disc.(%)"
+msgstr "Krt.(%)"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:41
+msgid "attn."
+msgstr "T.a.v."
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:60
+msgid "Vat"
+msgstr "BTW"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:57
+msgid "Fax"
+msgstr "Fax"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:176
+msgid "Description"
+msgstr "Omschrijving"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:216
+msgid "Projkrt."
+msgstr "Projkrt."
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:191
+msgid "Price"
+msgstr "Prijs"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:115
+msgid "Productomschrijvingen offerte"
+msgstr "Productomschrijvingen offerte"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:263
+msgid "Total :"
+msgstr "Totaal :"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:151
+msgid "Salesperson"
+msgstr "Behandelaar"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:306
+msgid "Product descriptions tender"
+msgstr "Productomschrijvingen offerte"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:54
+msgid "Tel."
+msgstr "Tel."
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:103
+msgid "Order No"
+msgstr "Order Nr."
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:116
+msgid "Prijsbepaling ICY Control Center"
+msgstr "Prijsbepaling ICY Control Center"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:65
+msgid "Shipping address"
+msgstr "Afleveradres"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:144
+msgid "Date Ordered"
+msgstr "Besteldatum"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:240
+msgid "Net Total"
+msgstr "Netto Totaal"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:248
+msgid "VAT"
+msgstr "BTW"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:182
+msgid "Quantity"
+msgstr "Aantal"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:100
+msgid "Quotation No"
+msgstr "Offerte nr."
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:179
+msgid "VAT(%)"
+msgstr "BTW(%)"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:147
+msgid "Quotation Date"
+msgstr "Offertedatum"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:112
+msgid "Bijlage"
+msgstr "Bijlage"
+
+#. module: icy_sale_webkit
+#: report:addons/icy_sale_webkit/report/icy_sale_order.mako:154
+msgid "Payment Term"
+msgstr "Betalingsconditie"
+
+#. module: icy_sale_webkit
+#: model:ir.actions.report.xml,name:icy_sale_webkit.report_sale_order
+msgid "Quotation / Order"
+msgstr "Offerte / Order"
+

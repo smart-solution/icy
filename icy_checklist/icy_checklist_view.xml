@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_checklist_survey_form">
+        <field name="name">icy.checklist.survey.form</field>
+        <field name="model">survey</field>
+	<field name="inherit_id" ref="survey.survey_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="response_user" position="after">
+                        <field name="used_for_sales"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_checklist_survey_name_wiz">
+        <field name="name">icy.checklist.survey.name.wiz</field>
+        <field name="model">survey.name.wiz</field>
+	<field name="inherit_id" ref="survey.view_survey_name"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="survey_id" position="after">
+                    <field name="partner_id" readonly="1"/>
+                    <field name="lead_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_checklist_survey_question_wiz">
+        <field name="name">icy.checklist.survey.question.wiz</field>
+        <field name="model">survey.question.wiz</field>
+	<field name="inherit_id" ref="survey.view_survey_question_message"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="name" position="after">
+                    <field name="partner_id" readonly="1"/>
+                    <field name="lead_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_checklist_survey_response_form">
+        <field name="name">icy.checklist.survey.response.form</field>
+        <field name="model">survey.response</field>
+	<field name="inherit_id" ref="survey.survey_response_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="user_id" position="after">
+                    <field name="partner_id" readonly="1"/>
+                    <field name="lead_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+<!--    <record model="ir.ui.view" id="icy_checklist_cust_form">
+        <field name="name">icy.checklist.cust.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="crm.view_partners_form_crm1"/> 
+        <field name="arch" type="xml">
+            <data>
+                <page string="Sales &amp; Purchases" position="before">
+                    <page string="Inventariesatieformulier">
+                        <button name="answer_checklist" string="Beantwoord Inventariesatieformulier" icon="gtk-execute" type="object" colspan="1"/>
+                        <newline/>
+                        <field name="survey_ids" nolabel="1" colspan="4"/>
+                    </page>
+                </page>
+            </data>
+        </field>
+    </record> -->
+
+    <record model="ir.ui.view" id="icy_checklist_lead_form">
+        <field name="name">icy.checklist.lead.form</field>
+        <field name="model">crm.lead</field>
+	<field name="inherit_id" ref="crm.crm_case_form_view_oppor"/> 
+        <field name="arch" type="xml">
+            <data>
+                <page string="Lead" position="after">
+                    <page string="Inventariesatieformulier">
+                        <button name="answer_checklist" string="Beantwoord Inventariesatieformulier" icon="gtk-execute" type="object" colspan="1"/>
+                        <newline/>
+                        <field name="survey_ids" nolabel="1" colspan="4"/>
+                    </page>
+                </page>
+            </data>
+        </field>
+    </record> 
+
+    </data>
+</openerp>
+

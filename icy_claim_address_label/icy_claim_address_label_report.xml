@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record model="ir.header_webkit" id="icy_address_label_header">
+    		<field name="name">icy_address_label_header</field>
+    		<field name="company_id">1</field>
+    		<field name="orientation">Portrait</field>
+    		<field name="format">B9</field>
+    		<field name="margin_top">4.00</field>
+    		<field name="margin_bottom">1.00</field>
+     		<field name="margin_left">5.00</field>
+    		<field name="margin_right">1.00</field>
+    		<field name="page_width">62.00</field>
+    		<field name="page_length">29.00</field>
+    		<field name="css">body { font-family: Arial; font-size: 11px; }</field>
+    		<field name="html"></field>
+    		<field name="footer_html"></field>
+    	</record>
+    	
+        <report
+            auto="False"
+            id="crm_label_helpdesk"
+            model="crm.helpdesk"
+            name="crm_label_helpdesk"
+            file="icy_claim_address_label/report/icy_claim_address_label.mako"
+            string="Address Label"
+            attachment="('ADR'+(str(object.id) or '') + '.pdf')"
+            attachment_use="False"
+            multi="True"
+            header="False"
+            report_type="webkit"
+            webkit_header="icy_address_label_header"/>
+    
+       <record model="ir.ui.view" id="icy_label_helpdesk_form">
+           <field name="name">icy.label.helpdesk.form</field>
+           <field name="model">crm.helpdesk</field>
+		   <field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk"/>
+           <field name="type">form</field>
+           <field name="arch" type="xml">
+              <button name="case_cancel" position="after">
+                 <button name="label_print" string="Print addres" type="object"/>           
+              </button>
+           </field>
+       </record>
+
+    <record model="ir.ui.view" id="icy_crm_case_categ_etik_form">
+        <field name="name">icy.crm.case.categ.etik.form</field>
+        <field name="model">crm.case.categ</field>
+	    <field name="inherit_id" ref="crm.crm_case_categ-view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="object_id" position="after">
+                <field name="image" widget="image"/>
+            </field>
+        </field>
+    </record>
+
+    
+       </data>
+</openerp>

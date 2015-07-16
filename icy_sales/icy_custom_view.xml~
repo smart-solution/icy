@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_purchase_partner_form">
+        <field name="name">icy.purchase.partner.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="active" position="before">
+                <field name="subcontractor" attrs="{'invisible': [('supplier','!=',True)]}"/>
+                <field name="pct_overdelivery" attrs="{'invisible': [('supplier','!=',True)]}"/>
+                <field name="pct_underdelivery" attrs="{'invisible': [('supplier','!=',True)]}"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_survey_name_wiz">
+        <field name="name">icy.purchase.survey.name.wiz</field>
+        <field name="model">survey.name.wiz</field>
+	<field name="inherit_id" ref="survey.view_survey_name"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="survey_id" position="after">
+                    <field name="product_id" readonly="1"/>
+                    <field name="stock_move_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_survey_question_wiz">
+        <field name="name">icy.purchase.survey.question.wiz</field>
+        <field name="model">survey.question.wiz</field>
+	<field name="inherit_id" ref="survey.view_survey_question_message"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="name" position="after">
+                    <field name="product_id" readonly="1"/>
+                    <field name="stock_move_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_survey_response_form">
+        <field name="name">icy.purchase.survey.response.form</field>
+        <field name="model">survey.response</field>
+	<field name="inherit_id" ref="survey.survey_response_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="user_id" position="after">
+                    <field name="product_id" readonly="1"/>
+                    <field name="stock_move_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_product_form">
+        <field name="name">icy.purchase.product.form</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_normal_form_view"/> 
+        <field name="arch" type="xml">
+            <data>
+                <page string="Accounting" position="after">
+                    <page string="Checklists">
+                        <button name="answer_checklist" string="Answer Checklist" icon="gtk-execute" type="object" colspan="1"/>
+                        <newline/>
+                        <field name="survey_ids" nolabel="1" colspan="4"/>
+                    </page>
+                </page>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_stock_move_form">
+        <field name="name">icy.purchase.stock.move.form</field>
+        <field name="model">stock.move</field>
+	<field name="inherit_id" ref="stock.view_move_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <button name="action_confirm" position="before">
+                    <button name="answer_checklist" string="Inspection" type="object" class="oe_highlight"/>
+                </button>
+            </data>
+        </field>
+    </record> 
+
+    </data>
+</openerp>
+

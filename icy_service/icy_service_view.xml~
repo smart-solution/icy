@@ -1,0 +1,486 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_crm_case_section_form">
+        <field name="name">icy.crm.case.section.form</field>
+        <field name="model">crm.case.section</field>
+	<field name="inherit_id" ref="crm.crm_case_section_view_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="active" position="after">
+                <field name="helpdesk_category"/>
+                <field name="incoming_via_id" domain="[('incoming_service_call', '=', True)]"/>
+                <field name="start_email_template_id"/>
+                <field name="end_email_template_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_crm_case_categ_form">
+        <field name="name">icy.crm.case.categ.form</field>
+        <field name="model">crm.case.categ</field>
+	<field name="inherit_id" ref="crm.crm_case_categ-view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="object_id" position="after">
+		<group colspan="4" col="2">
+		    <group>
+	                <field name="probleem"/>
+        	        <field name="uitleg"/>
+        	        <field name="reparatie"/>
+        	        <field name="algemeen"/>
+        	        <field name="klacht"/>
+        	        <field name="logistiek"/>
+        	        <field name="omruil"/>
+        	        <field name="toesturen"/>
+		    </group>
+		    <group>
+			<field name="active"/>
+			<field name="notes"/>
+		    </group>
+		</group>
+        	<field name="email_template_ids"/>
+                <field name="product_ids"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_crm_helpdesk_form">
+        <field name="name">icy.crm.helpdesk.form</field>
+        <field name="model">crm.helpdesk</field>
+	<field name="inherit_id" ref="crm_helpdesk.crm_case_form_view_helpdesk"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+<!-- verder uit te werken
+            <button name="case_cancel">
+                <button string="Schedule/Log Call" name="453" type="action"/>
+            </button>
+-->
+            <field name="partner_id" position="replace"/>
+            <field name="section_id" position="before">
+		<group colspan="4" col="2">
+		    <group string="Adres Info">
+                        <field name="incoming_via_id" required="True" domain="[('incoming_service_call', '=', True)]" on_change="onchange_incoming_via(incoming_via_id)"/>
+	       	        <field name="cust_zip" attrs="{'readonly': [('partner_id', '!=', False)], 'invisible': [('partner_id', '!=', False)], 'required': [('partner_id', '==', False)]}" on_change="onchange_zip(cust_zip)"/>
+                        <field name="street_nbr" attrs="{'readonly': [('partner_id', '!=', False)], 'invisible': [('partner_id', '!=', False)], 'required': [('partner_id', '==', False)]}" on_change="onchange_street_id(zip_id, street_id, street_nbr, cust_street, cust_zip, cust_city)"/>
+		        <field name="cust_city" attrs="{'readonly': [('street_id', '!=', False),('partner_id', '!=', False)], 'required': [('partner_id', '==', False)], 'invisible': [('partner_id', '!=', False)]}" on_change="onchange_street_id(zip_id, street_id, street_nbr, cust_street, cust_zip, cust_city)"/>
+                        <field name="cust_street" attrs="{'readonly': [('street_id', '!=', False),('partner_id', '!=', False)], 'required': [('partner_id', '==', False)], 'invisible': [('partner_id', '!=', False)]}" on_change="onchange_street_id(zip_id, street_id, street_nbr, cust_street, cust_zip, cust_city)"/>
+                        <field name="zip_id" readonly="True" invisible="True"/>
+                        <field name="street_id" readonly="True" invisible="True"/>
+<!--		        <field name="cust_street" attrs="{'readonly': True}"/> -->
+	      	        <field name="address"/>
+ 		    </group>
+		    <group string="Contact Info">
+		        <field name="first_name" attrs="{'invisible': [('partner_id', '!=', False)]}" on_change="onchange_fml_name(first_name, middle_name, last_name)"/>
+		        <field name="middle_name" attrs="{'invisible': [('partner_id', '!=', False)]}" on_change="onchange_fml_name(first_name, middle_name, last_name)"/>
+		        <field name="last_name" attrs="{'invisible': [('partner_id', '!=', False)]}" on_change="onchange_fml_name(first_name, middle_name, last_name)"/>
+                        <field name="partner_id" required="True" domain="[('consumer', '=', True)]" string="Relatie" on_change="icy_onchange_partner_id(partner_id, cust_email)"/>
+		        <field name="cust_name" readonly="True" invisible="True"/>
+		        <field name="gender"/>
+		        <field name="cust_phone"/>
+		        <field name="cust_email"/>
+		        <field name="essent_ref"/>
+		        <field name="create_partner" attrs="{'invisible': [('partner_id', '!=', False)]}" on_change="onchange_create_partner(partner_id, cust_name, cust_street, cust_zip, cust_city, cust_phone, cust_email, zip_id, street_id, street_nbr, first_name, middle_name, last_name)"/>
+		    </group>
+		    <group string="Product Info">
+                    	<field name="received_via_id" domain="[('received_via', '=', True)]" required="True"/>
+		    </group>
+		</group>
+            </field>
+
+            <field name="categ_id" position="replace"/>
+            <field name="section_id" position="replace"/>
+	    <field name="received_via_id" position="before">
+                <field name="section_id" required="True" domain="[('helpdesk_category', '=', True)]" string="Product"/>
+	    </field>
+
+            <page string="General" position="before">
+                <page string="Case Info">
+		    <group colspan="2" col="2">
+                    	<field name="categ_id" required="True" attrs="{'invisible': [('partner_id', '=', False)]}" string="Service Categorie" on_change="onchange_categ_id(categ_id)"/>
+                    	<field name="categ2_id" attrs="{'invisible': ['|',('categ_id', '=', False),('partner_id', '=', False)]}" on_change="onchange_categ2_id(categ2_id)"/>
+                    	<field name="categ3_id" attrs="{'invisible': ['|',('categ2_id', '=', False),('partner_id', '=', False)]}" on_change="onchange_categ3_id(categ3_id)"/>
+                    	<field name="categ4_id" attrs="{'invisible': ['|',('categ3_id', '=', False),('partner_id', '=', False)]}" on_change="onchange_categ4_id(categ4_id)"/>
+                    	<field name="categ5_id" attrs="{'invisible': ['|',('categ4_id', '=', False),('partner_id', '=', False)]}" on_change="onchange_categ5_id(categ5_id)"/>
+			<field name="username_portal" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+			<field name="brandtype" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                    	<field name="serial_nbr1" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                    	<field name="serial_nbr2" attrs="{'invisible': ['|',('serial_nbr1', '=', False),('partner_id', '=', False)]}"/>
+                    	<field name="additional_sns" attrs="{'invisible': ['|',('serial_nbr2', '=', False),('partner_id', '=', False)]}"/>
+                    	<field name="serial_nbr_ids" attrs="{'invisible': ['|',('additional_sns','=',False),('partner_id', '=', False)]}"/>
+		    	<field name="omruil" invisible="True"/> <!--attrs="{'invisible': [('partner_id', '=', False)]}"/> -->
+		    	<field name="toesturen" invisible="True"/> <!--attrs="{'invisible': [('partner_id', '=', False)]}"/> -->
+                    	<field name="product_id" string="Omruil" attrs="{'invisible': ['|',('omruil', '=', False),('partner_id', '=', False)], 'required': [('omruil', '=', True)]}" domain="[('id','in', product_ids[0][2])]"/>
+                    	<field name="product_id_send" string="Toesturen" attrs="{'invisible': ['|',('toesturen', '=', False),('partner_id', '=', False)], 'required': [('toesturen', '=', True)]}" domain="[('id','in', product_ids_send[0][2])]"/>
+                    	<field name="email_template_id" attrs="{'invisible': ['|',('categ_id', '=', False),('partner_id', '=', False)]}" domain="[('id','in', email_template_ids[0][2])]" on_change="onchange_email_template(email_template_id, email_template2_id, email_template3_id, email_template4_id, email_template5_id, gender, partner_id, section_id)"/>
+                    	<field name="email_template2_id" attrs="{'invisible': ['|',('categ2_id', '=', False),('partner_id', '=', False)]}" domain="[('id','in', email_template2_ids[0][2])]" on_change="onchange_email_template(email_template_id, email_template2_id, email_template3_id, email_template4_id, email_template5_id, gender, partner_id, section_id)"/>
+                    	<field name="email_template3_id" attrs="{'invisible': ['|',('categ3_id', '=', False),('partner_id', '=', False)]}" domain="[('id','in', email_template3_ids[0][2])]" on_change="onchange_email_template(email_template_id, email_template2_id, email_template3_id, email_template4_id, email_template5_id, gender, partner_id, section_id)"/>
+                    	<field name="email_template4_id" attrs="{'invisible': ['|',('categ4_id', '=', False),('partner_id', '=', False)]}" domain="[('id','in', email_template4_ids[0][2])]" on_change="onchange_email_template(email_template_id, email_template2_id, email_template3_id, email_template4_id, email_template5_id, gender, partner_id, section_id)"/>
+                    	<field name="email_template5_id" attrs="{'invisible': ['|',('categ5_id', '=', False),('partner_id', '=', False)]}" domain="[('id','in', email_template5_ids[0][2])]" on_change="onchange_email_template(email_template_id, email_template2_id, email_template3_id, email_template4_id, email_template5_id, gender, partner_id, section_id)"/>
+                    	<field name="call_transfer"/>
+                    	<field name="call_transfer_user_id" attrs="{'invisible': [('call_transfer', '=', False)]}"/>
+                    	<field name="notes" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                    	<field name="task_user" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                    	<field name="task_date" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                    	<field name="task_description" attrs="{'invisible': [('partner_id', '=', False)]}"/>
+			<field name="email_body" attrs="{'invisible': [('email_template_id', '=', False),('email_template2_id', '=', False),('email_template3_id', '=', False),('email_template4_id', '=', False),('email_template5_id', '=', False)]}"/>
+		    	<field name="omruil_retour_date" attrs="{'invisible': True}"/> 
+		    	<field name="product_ids" attrs="{'invisible': True}"/> 
+		    	<field name="product_ids_send" attrs="{'invisible': True}"/> 
+		    	<field name="email_template_ids" attrs="{'invisible': True}"/> 
+		    	<field name="email_template2_ids" attrs="{'invisible': True}"/> 
+		    	<field name="email_template3_ids" attrs="{'invisible': True}"/> 
+		    	<field name="email_template4_ids" attrs="{'invisible': True}"/> 
+		    	<field name="email_template5_ids" attrs="{'invisible': True}"/> 
+		    </group>
+		</page>
+            </page>
+            <page string="Case Info" position="before">
+                <page string="Service Historie" attrs="{'invisible': [('history_found', '=', False)]}">
+		    <field name="history_found" invisible="True"/>
+                    <field name="service_call_history_ids" nolabel="1" context="{'default_partner_id':'partner_id'}" readonly="True">
+			<tree string="Service Historie">
+			    <field name="state"/>
+			    <field name="date"/>
+ 			    <field name="user_id"/> 
+			    <field name="call_transfer_user_id"/>
+			    <field name="name"/>
+			    <field name="section_id"/>
+			    <field name="categ_id"/>
+			    <field name="description"/>
+			    <field name="task_user"/>
+			    <field name="task_date"/>
+			    <field name="task_description"/>
+		        </tree>
+		    </field>
+		</page>
+            </page>
+            <page string="Case Info" position="after">
+<!--                <page string="Interne Taken">
+  		    <field name="icy_task_ids" nolabel="1" context="{'default_helpdesk_id':active_id}">
+		        <tree string="Taken">
+			    <field name="name"/>
+			    <field name="helpdesk_id"/>
+ 			    <field name="user_name"/> 
+			    <field name="date_deadline"/>
+			    <field name="state"/>
+		        </tree>
+		    </field>
+		</page> -->
+                <page string="Call Relaties">
+		    <group colspan="4" col="2">
+		        <field name="parent_id"/>
+		    </group>
+		    <group string="Vervolgcalls">
+                        <field name="child_ids" readonly="True"/>
+		    </group>
+		</page>
+            </page>
+            <page string="Extra Info" position="before">
+                <page string="Stock Moves">
+                    <field name="stock_move_ids"/>
+		</page>
+            </page>
+            <page string="Extra Info" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </page>
+            <page string="Stock Moves" position="attributes">
+                <attribute name="string">Omruil</attribute>
+            </page>
+
+            <field name="user_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+            <field name="date_deadline" position="replace"/>
+            <field name="date_closed" position="after">
+                <field name="date_deadline"/>
+            </field>
+            <field name="channel_id" position="replace"/>
+            <field name="active" position="after">
+                <field name="channel_id"/>
+            </field>
+            <field name="priority" position="replace"/>
+            <field name="active" position="after">
+                <field name="priority"/>
+            </field>
+            <field name="name" position="replace"/>
+            <field name="active" position="after">
+                <field name="name"/>
+            </field>
+            <field name="email_from" position="replace"/>
+            <field name="name" position="after">
+                <field name="email_from"/>
+            </field>
+            <group string="References" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </group> 
+            <group string="Categorization" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </group> 
+            <group string="Communication" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </group> 
+            <field name="ref" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+            <field name="ref2" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+            <field name="date" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_partner_helpdesk_form">
+        <field name="name">icy.partner.helpdesk.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="crm_claim.view_claim_partner_info_form1"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="company_id" position="before">
+		<group colspan="4" col="2">
+       		    <separator string="Service Instellingen" colspan="4" col="2"/>
+		    <field name="incoming_service_call"/>
+                    <field name="received_via"/>
+                    <field name="consumer"/>
+                    <field name="via_essent"/>
+		</group>
+                <separator string="Relatie Instellingen" colspan="4" col="2"/>
+            </field>
+            <field name="claims_ids" position="before">
+                <field name="helpdesk_ids" nolabel="1"/>
+            </field>
+            <group name="grp_claim" position="attributes">
+                <attribute name="string">Helpdesk Calls</attribute>
+            </group> 
+            <field name="claims_ids" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+            <field name="task_ids" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+<!--            <label for="Tasks" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </label> -->
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_helpdesk_tree_form">
+        <field name="name">icy.helpdesk.tree.form</field>
+        <field name="model">crm.helpdesk</field>
+	<field name="inherit_id" ref="crm_helpdesk.crm_case_tree_view_helpdesk"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="date_deadline" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+<!--            <field name="section_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> -->
+            <field name="priority" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+	    <field name="name" position="replace"/>
+	    <field name="partner_id" position="replace"/>
+	    <field name="date" position="replace"/>
+    
+	    <field name="user_id" position="replace"/>
+	    <field name="section_id" position="replace"/>
+            <field name="state" position="after">
+                <field name="date"/>
+                <field name="user_id" string="Aangemaakt Door"/>
+                <field name="call_transfer_user_id"/>
+                <field name="name" string="Onderwerp"/>
+                <field name="partner_id"/>
+                <field name="section_id" string="Product"/>
+                <field name="categ_id"/>
+<!--                <field name="description"/> -->
+                <field name="task_user"/>
+                <field name="task_date"/>
+                <field name="task_description"/>
+            </field> 
+            <tree string="Helpdesk Support Tree" position="attributes">
+		<attribute name="colors">red:task_date and (task_date&lt;current_date);black:state=='open';blue:state=='pending';gray:state in ('cancel','done')</attribute>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_helpdesk_filter_form">
+        <field name="name">icy.helpdesk.filter.form</field>
+        <field name="model">crm.helpdesk</field>
+	<field name="inherit_id" ref="crm_helpdesk.view_crm_case_helpdesk_filter"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <filter string="Date" position="after">
+                <filter string="Category" domain="[]" context="{'group_by':'section_id'}"/>
+                <filter string="Error Category" domain="[]" context="{'group_by':'categ_id'}"/>
+            </filter> 
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="icy_action_helpdesk_form">
+        <field name="name">Helpdesk</field>
+        <field name="res_model">crm.helpdesk</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="context">{'default_user_id':uid}</field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_stock_move_helpdesk_form">
+        <field name="name">icy.stock.move.helpdesk.form</field>
+        <field name="model">stock.move</field>
+	<field name="inherit_id" ref="stock.view_move_tree_reception_picking"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <button name="320" position="attributes">
+                <attribute name="invisible">False</attribute>
+                <attribute name="groups"></attribute>
+            </button> 
+            <field name="origin" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_product_helpdesk_form">
+        <field name="name">icy.product.helpdesk.form</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="default_code" position="after">
+                <field name="helpdesk_retour"/>
+            </field> 
+            <page string="Accounting" position="after">
+                <page string="Service Categorieën">
+                    <field name="case_categ_ids"/>
+		</page>
+            </page>
+        </field>
+    </record>
+
+    <menuitem name="Service" id="icy_service.menu_service" sequence="15"/>
+    <menuitem name="Service" parent="icy_service.menu_service" id="icy_service.menu_service_call" sequence="10"/>
+    <menuitem name="Helpdesk" parent="icy_service.menu_service_call" id="icy_service.helpdesk_call" sequence="5" action="icy_action_helpdesk_form"/>
+    <menuitem name="Service Verzendingen" parent="icy_service.menu_service_call" id="icy_service.omruil_ship" sequence="10" action="stock.action_picking_tree"/>
+    <menuitem name="Service Ontvangsten" parent="icy_service.menu_service_call" id="icy_service.omruil_rec" sequence="15" action="stock.action_picking_tree4"/> 
+    <menuitem name="Taken" parent="icy_service.menu_service_call" id="icy_service.tasks" sequence="20" action="project.action_view_task"/>
+    <menuitem name="Instellingen" parent="icy_service.menu_service" id="icy_service.menu_service_config" sequence="15"/>
+    <menuitem name="Categoriëen" parent="icy_service.menu_service_config" id="icy_service.helpdesk_categ" sequence="5" action="crm_helpdesk.crm_helpdesk_categ_action"/> 
+    <menuitem name="Producten" parent="icy_service.menu_service_config" id="icy_service.helpdesk_salesteam" sequence="10" action="crm.crm_case_section_act"/> 
+
+    <record model="ir.ui.view" id="icy_email_template_form">
+        <field name="name">icy.email.template.form</field>
+        <field name="model">email.template</field>
+	<field name="inherit_id" ref="email_template.email_template_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="body_html" position="before">
+                <field name="email_body" width="250" height="450" nolabel="1" colspan="2" placeholder="Email contents (with formatting)"/>
+            </field> 
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_icy_crm_partner_form">
+        <field name="name">view.icy.crm.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_zip_address.icy_partner_address_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+<!--            <xpath expr="//page[@string='Address']/group/group/field[@name='street2']" position="replace"/> -->
+            <xpath expr="//page[@string='Address']/group/group/field[@name='street']" position="replace"/>
+            <xpath expr="//page[@string='Address']/group/group/field[@name='zip']" position="replace"/>
+            <xpath expr="//page[@string='Address']/group/group/field[@name='city']" position="replace"/>
+            <xpath expr="//page[@string='Address']/group/group/field[@name='country_id']" position="replace"/> 
+            <xpath expr="//page[@string='Address']/group/group/group/field[@name='phone']" position="replace"/> 
+            <xpath expr="//page[@string='Address']/group/group/group/field[@name='mobile']" position="replace"/> 
+            <xpath expr="//page[@string='Address']/group/group/group/field[@name='fax']" position="replace"/> 
+            <xpath expr="//page[@string='Address']/group/group/group/field[@name='email']" position="replace"/> 
+            <xpath expr="//page[@string='Address']/group/group/group/field[@name='website']" position="replace"/> 
+            <xpath expr="//page[@string='Sales &amp; Purchases']/group/group/field[@name='user_id']" position="replace"/> 
+	    <field name="category_id" position="after">
+		<field name="user_id" placeholder="Account manager..." modifiers="{}" domain="[('salesrep', '=', True)]"/>
+            </field>
+<!--	    <field name="section_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> -->
+<!--	    <separator string="Accountmanager" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </separator> -->
+            <field name="zip_id" position="replace">
+                <field name="zip_id" invisible="True"/>
+            </field>
+            <field name="street_id" position="replace">
+                <field name="street_id" invisible="True" domain="[('city_id','=',zip_id)]"/>
+            </field>
+            <field name="street_nbr" position="replace">
+                <field name="street_nbr" invisible="True"/>
+            </field>
+            <field name="street_bus" position="replace">
+                <field name="street_bus" invisible="True"/>
+            </field>
+	    <field name="street_bus" position="after">
+	       	<field name="zip" on_change="onchange_zip(zip)"/>
+                <field name="street_nbr"/>
+		<field name="city"/>
+                <field name="street"/>
+                <field name="zip_id" invisible="True"/>
+                <field name="street_id" invisible="True"/>
+		<field name="country_id"/>
+	    </field>
+	    <field name="function" position="before">
+		<separator string="Contactgegevens" colspan="4" col="2"/>
+		<field name="phone"/>
+		<field name="mobile"/>
+		<field name="fax"/>
+		<field name="email"/>
+		<field name="website"/>
+	    </field>
+<!--            <xpath expr="//page[@string='Address']/group/group[@name='addressgroup']" position="attributes">
+		<attribute name="invisible">True</attribute>
+	    </xpath> -->
+            <xpath expr="//page[@string='Address']" position="attributes">
+		<attribute name="string">Contactgegevens</attribute>
+	    </xpath> 
+            <xpath expr="//page[@string='Contactgegevens']" position="attributes">
+		<attribute name="invisible">True</attribute>
+	    </xpath> 
+            <xpath expr="//sheet/notebook/page[@string='Contacts']/field[@name='child_ids']/form/sheet/div/field[@name='category_id']" position="attributes">
+		<attribute name="placeholder">Functie...</attribute>
+	    </xpath>
+            <xpath expr="//sheet/notebook/page[@string='Contacts']/field[@name='child_ids']/form/sheet/group/field[@name='function']" position="replace"/>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_icy_crm_partner2_form">
+        <field name="name">view.icy.crm.partner2.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="crm.view_partners_form_crm1"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="section_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> 
+<!--	    <separator string="Accountmanager" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </separator> -->
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_users_form">
+        <field name="name">icy.users.form</field>
+        <field name="model">res.users</field>
+	<field name="inherit_id" ref="base.view_users_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="salesrep"/>
+            </field> 
+        </field>
+    </record>
+
+    </data>
+</openerp>
+
+

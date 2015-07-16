@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="sequence_crm_installation_request_type" model="ir.sequence.type">
+            <field name="name">Installatieaanvraag</field>
+            <field name="code">crm.installation.request</field>
+        </record>
+        
+        <record id="sequence_crm_installation_request" model="ir.sequence">
+            <field name="name">Installatieaanvraag</field>
+            <field name="code">crm.installation.request</field>
+            <field name="prefix">INST/%(year)s</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_purchase_partner_form">
+        <field name="name">icy.purchase.partner.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+		<separator string="Inkoop Instellingen" colspan="4" col="2"/>
+                <field name="subcontractor"/>
+                <field name="pct_overdelivery"/>
+                <field name="pct_underdelivery"/>
+            </field>
+	    <field name="lang" position="after">
+		<field name="purchase_order_text_id"/>
+	    </field>
+            <page string="History" position="before">
+   	    	    <page string="Leveranciersprijzen" attrs="{'invisible': [('supplier', '=', False)]}">
+		    	<field name="product_ids" colspan="4" nolabel="1" context="{'default_name':active_id}">
+			    <tree string="Product Prices">
+ 				<field name="name" invisible="True"/> 
+				<field name="product_ref"/> 
+				<field name="product_id"/> 
+				<field name="qty"/> 
+				<field name="first_price"/> 
+<!--				<field name="supplier_lead_time"/> -->
+				<field name="product_code"/> 
+<!--				<field name="product_name"/> -->
+				<field name="manufacturer"/>
+				<field name="manufacturer_part_nbr"/>
+				<field name="manufacturer_priority"/>
+ 			    </tree>
+		    	</field>
+		    </page>
+                <page string="Inkoopoffertes" attrs="{'invisible': [('supplier', '=', False)]}">
+                    <field name="purchase_quotation_ids">
+			<tree string="Inkooporders" colors="red:(minimum_planned_date&lt;current_date)">
+			    <field name="date_order" widget="date"/>
+	                    <field name="state"/>
+	                    <field name="validator"/>
+			    <field name="name"/>
+			    <field name="partner_ref"/>
+			    <field name="amount_total"/>
+			    <field name="minimum_planned_date"/>
+			</tree>
+		    </field>
+		</page>
+                <page string="Inkooporders" attrs="{'invisible': [('supplier', '=', False)]}">
+                    <field name="purchase_order_ids" context="{'state':'manual'}">
+			<tree string="Inkooporders" colors="blue:invoiced;green:(delivery_state=='Geleverd');red:(minimum_planned_date&lt;current_date)">
+			    <field name="date_order" widget="date"/>
+	                    <field name="delivery_state"/>
+	                    <field name="validator"/>
+			    <field name="name"/>
+			    <field name="partner_ref"/>
+			    <field name="amount_total"/>
+			    <field name="minimum_planned_date"/>
+			    <field name="invoiced" invisible="True"/>
+			    <field name="state" invisible="True"/>
+			</tree>
+		    </field>
+		</page>
+                <page string="Inkoopfacturen" attrs="{'invisible': [('supplier', '=', False)]}">
+                    <field name="purchase_invoice_ids" nolabel="1" context="{'default_partner_id':active_id}" readonly="True">
+			<tree string="Invoices" colors="blue:state in ('draft');green:state in ('paid');red:(date_due&lt;current_date)">
+			    <field name="date_invoice" widget="date"/>
+			    <field name="date_due" widget="date"/>
+			    <field name="state"/>
+	                    <field name="amount_untaxed" sum="Untaxed Amount"/>
+	                    <field name="amount_total" sum="Total Amount"/>
+			    <field name="number"/>
+			    <field name="name"/>
+			</tree>
+		    </field>
+		</page>
+            </page>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_survey_name_wiz">
+        <field name="name">icy.purchase.survey.name.wiz</field>
+        <field name="model">survey.name.wiz</field>
+	<field name="inherit_id" ref="survey.view_survey_name"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="survey_id" position="after">
+                    <field name="product_id" readonly="1"/>
+                    <field name="stock_move_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_survey_question_wiz">
+        <field name="name">icy.purchase.survey.question.wiz</field>
+        <field name="model">survey.question.wiz</field>
+	<field name="inherit_id" ref="survey.view_survey_question_message"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="name" position="after">
+                    <field name="product_id" readonly="1"/>
+                    <field name="stock_move_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_survey_response_form">
+        <field name="name">icy.purchase.survey.response.form</field>
+        <field name="model">survey.response</field>
+	<field name="inherit_id" ref="survey.survey_response_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="user_id" position="after">
+                    <field name="product_id" readonly="1"/>
+                    <field name="stock_move_id" readonly="1"/>
+                </field>
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_purchase_product_form">
+        <field name="name">icy.purchase.product.form</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_normal_form_view"/> 
+        <field name="arch" type="xml">
+            <data>
+                <page string="Accounting" position="after">
+                    <page string="Checklists">
+                        <button name="answer_checklist" string="Answer Checklist" icon="gtk-execute" type="object" colspan="1"/>
+                        <newline/>
+                        <field name="survey_ids" nolabel="1" colspan="4"/>
+                    </page>
+                </page>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_stock_move_form">
+        <field name="name">icy.purchase.stock.move.form</field>
+        <field name="model">stock.move</field>
+	<field name="inherit_id" ref="stock.view_move_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <button name="action_confirm" position="before">
+                    <button name="answer_checklist" string="Inspection" type="object" class="oe_highlight"/>
+                </button>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_stock_move_picking_tree">
+        <field name="name">icy.purchase.stock.move.picking.tree</field>
+        <field name="model">stock.move</field>
+	<field name="inherit_id" ref="stock.view_move_picking_tree"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="product_id" position="after">
+                    <field name="product_desc"/>
+                    <field name="icy_value"/>
+                    <field name="icy_package"/>
+                    <field name="icy_smd_tht"/>
+		    <field name="price_unit"/>
+                </field>
+                <field name="product_qty" position="after">
+		    <field name="expected_invoice_amount"/>
+                </field>
+                <field name="date_expected" position="replace">
+                    <field name="date"/>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_stock_move_reception_tree">
+        <field name="name">icy.purchase.stock.move.reception.tree</field>
+        <field name="model">stock.move</field>
+	<field name="inherit_id" ref="stock.view_move_tree_reception_picking"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="product_id" position="after">
+                    <field name="product_desc"/>
+                    <field name="icy_value"/>
+                    <field name="icy_package"/>
+                    <field name="icy_smd_tht"/>
+		    <field name="expected_invoice_amount"/>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_stock_move_split_form">
+        <field name="name">icy.purchase.stock.move.split.form</field>
+        <field name="model">stock.move.split</field>
+	<field name="inherit_id" ref="stock.view_split_in_lots"/> 
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="/form/field[@name='line_ids']/tree[@string='Serial Numbers']/field[@name='quantity']" position="before">
+                    <field name="date_expected"/>
+                </xpath>
+                <xpath expr="/form/field[@name='line_ids']/form[@string='Serial Number']/group/field[@name='quantity']" position="before">
+                    <field name="date_expected"/>
+                </xpath>
+                <xpath expr="/form/field[@name='line_exist_ids']/tree[@string='Serial Numbers']/field[@name='quantity']" position="before">
+                    <field name="date_expected"/>
+                </xpath>
+                <xpath expr="/form/field[@name='line_exist_ids']/form[@string='Serial Number']/group/field[@name='quantity']" position="before">
+                    <field name="date_expected"/>
+                </xpath>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_order_tree">
+        <field name="name">icy.purchase.order.tree</field>
+        <field name="model">purchase.order</field>
+	<field name="inherit_id" ref="purchase.purchase_order_tree"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="minimum_planned_date" position="attributes">
+                    <attribute name="string">Geplande datum</attribute>
+                </field>
+                <field name="state" position="before">
+                    <field name="delivery_state"/>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_order_form">
+        <field name="name">icy.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+	<field name="inherit_id" ref="purchase.purchase_order_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="/form/sheet/notebook/page[@string='Purchase Order']/field[@name='order_line']/tree[@string='Purchase Order Lines']/field[@name='product_id']" position="attributes">
+		    <attribute name="string">Productcode</attribute>
+		</xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Purchase Order']/field[@name='order_line']/tree[@string='Purchase Order Lines']/field[@name='name']" position="after">
+                    <field name="icy_value"/>
+                    <field name="icy_package"/>
+<!--                    <field name="icy_smd_tht"/> -->
+                    <field name="supplier_product_nbr"/>
+<!--                    <field name="manufacturer_product_nbr"/> -->
+                    <field name="manufacturer_product"/>
+                </xpath>
+		<field name="invoice_method" position="replace"/>
+		<field name="partner_ref" position="after">
+		    <field name="invoice_method"/>
+		    <field name="via_quotation"/>
+		</field>
+		<field name="warehouse_id" position="after">
+<!--		    <field name="aanleiding"/> -->
+		    <field name="purchase_order_text_id" on_change="onchange_po_text(purchase_order_text_id)"/>
+		</field> 
+		<field name="payment_term_id" position="after">
+		    <field name="incoterm"/>
+		</field>
+                <field name="minimum_planned_date" position="attributes">
+                    <attribute name="string">Geplande datum</attribute>
+                </field>
+                <field name="dest_address_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="location_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+		<field name="notes" position="replace">
+		    <field name="notes" placeholder="Notes..."/>
+		    <field name="po_text"/>
+		</field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_picking_in_tree">
+        <field name="name">icy.picking.in.tree</field>
+        <field name="model">stock.picking.in</field>
+	<field name="inherit_id" ref="stock.view_picking_in_tree"/> 
+        <field name="arch" type="xml">
+            <data>
+		<field name="origin" position="after">
+		    <field name="expected_invoice_amount"/>
+		</field>
+                <field name="date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+                <field name="min_date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_picking_out_tree">
+        <field name="name">icy.picking.out.tree</field>
+        <field name="model">stock.picking.out</field>
+	<field name="inherit_id" ref="stock.view_picking_out_tree"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+                <field name="min_date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_picking_form">
+        <field name="name">icy.picking.form</field>
+        <field name="model">stock.picking.in</field>
+	<field name="inherit_id" ref="stock.view_picking_form"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+                <field name="min_date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+		<field name="date_done" position="replace"/>
+		<field name="min_date" position="after">
+		    <field name="date_done"/>
+		</field>
+		<field name="stock_journal_id" position="attributes">
+		    <attribute name="invisible">True</attribute>
+		</field>
+		<field name="stock_journal_id" position="after">
+		    <field name="expected_invoice_amount"/>
+		</field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_picking_form2">
+        <field name="name">icy.picking.form2</field>
+        <field name="model">stock.picking.out</field>
+	<field name="inherit_id" ref="stock.view_picking_form"/> 
+        <field name="arch" type="xml">
+            <data>
+		<field name="stock_journal_id" position="attributes">
+		    <attribute name="invisible">True</attribute>
+		</field>
+		<field name="stock_journal_id" position="after">
+		    <field name="expected_return_date"/>
+		    <field name="reason_return"/>
+		</field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_product_tree">
+        <field name="name">icy.product.tree</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_product_tree_view"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="name" position="after">
+                    <field name="icy_value"/>
+                    <field name="icy_package"/>
+                    <field name="icy_smd_tht"/>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_product_search">
+        <field name="name">icy.product.search</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_search_form_view"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="name" position="after">
+                    <field name="icy_value"/>
+                    <field name="icy_package"/>
+                    <field name="icy_smd_tht"/>
+                </field> 
+            </data>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_move_tree">
+        <field name="name">icy.move.tree</field>
+        <field name="model">stock.move</field>
+	<field name="inherit_id" ref="stock.view_move_tree"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="date" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+                <field name="date_expected" position="attributes">
+                    <attribute name="widget">date</attribute>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_purchase_supplierinfo_form">
+        <field name="name">icy.purchase.supplierinfo.form</field>
+        <field name="model">product.supplierinfo</field>
+	<field name="inherit_id" ref="product.product_supplierinfo_form_view"/> 
+        <field name="arch" type="xml">
+            <data>
+                <field name="product_name" position="before">
+                    <field name="product_id"/>
+                    <newline/>
+                </field>
+            </data>
+        </field>
+    </record> 
+
+	<record id="view_po_line_search" model="ir.ui.view">
+	    <field name="name">view.po.line.search</field>
+	    <field name="model">purchase.order.line</field>
+	    <field name="arch" type="xml">
+                <search string="Search Detail">
+                    <group string="Search..." expand="0">
+		    	<field name="product_id" select='1'/>
+		    	<field name="partner_id" select='1'/>
+		    	<field name="order_id" select='1'/>
+                    </group>
+                    <newline />
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" name="grouptype" context="{'group_by':'product_id'}" />
+                        <filter string="Partner" name="grouptype" context="{'group_by':'partner_id'}" />
+                        <filter string="Order" name="grouptype" context="{'group_by':'order_id'}" />
+                        <filter string="State" name="grouptype" context="{'group_by':'state'}" />
+                    </group>
+                </search>
+	    </field>
+	</record>
+
+        <record id="view_po_line_tree" model="ir.ui.view">
+            <field name='name'>view.po.line.tree</field>
+            <field name='model'>purchase.order.line</field>
+            <field name='arch' type='xml'>
+		<tree string="Inkooporderlijnen">
+		    <field name="product_id"/>
+		    <field name="name"/>
+<!--                    <field name="icy_value"/>
+                    <field name="icy_package"/>
+                    <field name="icy_smd_tht"/> -->
+		    <field name="partner_id"/>
+		    <field name="order_id"/>
+		    <field name="date_order"/>
+		    <field name="date_planned"/>
+		    <field name="product_qty"/>
+<!--		    <field name="received_qty"/> -->
+<!--		    <field name="invoiced_qty"/> -->
+		    <field name="price_unit"/>
+		    <field name="price_subtotal"/>
+		    <field name="state"/>
+		    <field name="order_state"/>
+		    <field name="invoiced"/>
+		</tree>
+	    </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_purchase_line_form">
+            <field name="name">Inkooporderlijnen</field>
+            <field name='res_model'>purchase.order.line</field>
+            <field name="view_mode">tree</field>
+            <field name="view_type">form</field>
+	    <field name="view_id" ref="view_po_line_tree"/>
+	    <field name="search_view_id" ref="view_po_line_search"/>
+        </record>
+
+        <menuitem name="Inkooporderlijnen" parent="purchase.menu_procurement_management" id="menu_po_line" sequence="100" action="action_purchase_line_form"/>
+
+    <record model="ir.ui.view" id="view_potexts_tree">
+        <field name="name">view.potexts.tree</field>
+        <field name="model">purchase.order.texts</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Teksten Inkooporder">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_potexts_form">
+        <field name="name">view.potexts.form</field>
+        <field name="model">purchase.order.texts</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Teksten Inkooporder">
+		<group>
+		<field name="name"/>
+                <field name="note"/>
+		</group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_potexts">
+        <field name="name">Teksten Inkooporder</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.order.texts</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_potexts_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_potexts_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_potexts_tree"/>
+        <field name="act_window_id" ref="action_potexts"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_potexts_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_potexts_form"/>
+        <field name="act_window_id" ref="action_potexts"/>
+    </record>
+
+    <menuitem name="Teksten Inkooporder" id="menu_potexts_form" action="action_potexts" parent = "purchase.menu_purchase_config_purchase" sequence="150"/>
+
+    </data>
+</openerp>
+

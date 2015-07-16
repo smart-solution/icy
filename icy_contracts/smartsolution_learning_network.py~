@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+##############################################################################
+
+from tools.translate import _
+from osv import fields, osv
+from datetime import datetime
+import netsvc
+
+class learning_network(osv.osv):
+    _name = 'learning.network'
+    _description = 'Learning Network'
+
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        reads = self.read(cr, uid, ids, ['name','parent_id'], context=context)
+        res = []
+        for record in reads:
+            name = record['name']
+            if record['parent_id']:
+                name = record['parent_id'][1]+' / '+name
+            res.append((record['id'], name))
+        return res
+
+    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = self.name_get(cr, uid, ids, context=context)
+        return dict(res)
+
+    _columns = {
+        'name': fields.char('Name', size=64, required=True, translate=True),
+        'parent_id': fields.many2one('learning.network', 'Parent Network', select=True),
+        'child_ids': fields.one2many('learning.network', 'parent_id', 'Child Networks'),
+        'partner_ids': fields.many2many('res.partner', 'learning_network_partner_rel', 'learning_network_id', 'partner_id', 'Partners'),
+        'complete_name': fields.function(_name_get_fnc, string='Name', type='char'),
+                }
+
+    def _check_recursion(self, cr, uid, ids, context=None):
+        level = 100
+        while len(ids):
+            cr.execute('select distinct parent_id from learning_network where id IN %s', (tuple(ids), ))
+            ids = filter(None, map(lambda x:x[0], cr.fetchall()))
+            if not level:
+                return False
+            level -= 1
+        return True
+
+    _constraints = [
+        (_check_recursion, 'Error ! You cannot create recursive Learning Networks.', ['parent_id'])
+    ]
+
+learning_network()
+
+class res_partner(osv.osv):
+    _name = 'res.partner'
+    _inherit = 'res.partner'
+    _columns = {
+        'learning_network_ids': fields.many2many('learning.network', 'learning_network_partner_rel', 'partner_id', 'learning_network_id', 'Learning Networks'),
+    }
+
+res_partner()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:# -*- coding: utf-8 -*-
+

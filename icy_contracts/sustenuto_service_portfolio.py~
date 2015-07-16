@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+##############################################################################
+
+from tools.translate import _
+from osv import fields, osv
+from datetime import datetime
+import netsvc
+
+class sustenuto_service_portfolio(osv.osv):
+    _name = 'sustenuto.service.portfolio'
+    _description = 'Service Portfolio'
+
+    def name_get(self, cr, uid, ids, context=None):
+        if not len(ids):
+            return []
+        reads = self.read(cr, uid, ids, ['name','parent_id'], context=context)
+        res = []
+        for record in reads:
+            name = record['name']
+            if record['parent_id']:
+                name = record['parent_id'][1]+' / '+name
+            res.append((record['id'], name))
+        return res
+
+    def _name_get_fnc(self, cr, uid, ids, prop, unknow_none, context=None):
+        res = self.name_get(cr, uid, ids, context=context)
+        return dict(res)
+
+#    def _cn_service_portfolio(self, cr, uid, ids, name, args, context=None):
+#        res = {}
+#        reads = self.read(cr, uid, ids, ['name','parent_id'], context=context)
+#        res = []
+#        for record in reads:
+#            name = record['name']
+#            if record['parent_id']:
+#                name = record['parent_id'][1]+' / '+name
+#            res.append((record['id'], name))
+#        return res
+#        for servport in self.browse(cr, uid, ids):
+#            res[servport.id] = servport.name
+#            if servport.parent_id:
+#                res = servport['parent_id'][1]+' / '+name
+#                print 'CN:',servport.parent_id
+#            if servport.parent_id:
+#                res[servport.id] = servport.parent_id & ' / ' & servport.name
+#            else:
+#                res[servport.id] = servport.name
+#        return res
+
+    _columns = {
+        'name': fields.char('Name', size=64, required=True, translate=True),
+        'parent_id': fields.many2one('sustenuto.service.portfolio', 'Parent portfolio', select=True),
+        'child_ids': fields.one2many('sustenuto.service.portfolio', 'parent_id', 'Child portfolios'),
+        'lead_ids': fields.many2many('crm.lead', 'sustenuto_service_portfolio_lead_rel', 'service_portfolio_id', 'lead_id', 'Leads/Opportunities'),
+        'project_ids': fields.many2many('project.project', 'sustenuto_service_portfolio_project_rel', 'service_portfolio_id', 'project_id', 'Projects'),
+        'sale_order_ids': fields.many2many('sale.order', 'sustenuto_service_portfolio_sale_rel', 'service_portfolio_id', 'sale_order_id', 'Projects'),
+        'complete_name': fields.function(_name_get_fnc, string='Name', type='char'),
+                }
+
+    def _check_recursion(self, cr, uid, ids, context=None):
+        level = 100
+        while len(ids):
+            cr.execute('select distinct parent_id from sustenuto_service_portfolio where id IN %s', (tuple(ids), ))
+            ids = filter(None, map(lambda x:x[0], cr.fetchall()))
+            if not level:
+                return False
+            level -= 1
+        return True
+
+    _constraints = [
+        (_check_recursion, 'Error ! You cannot create recursive service portfolios.', ['parent_id'])
+    ]
+
+sustenuto_service_portfolio()
+
+class crm_lead(osv.osv):
+    _name = 'crm.lead'
+    _inherit = 'crm.lead'
+    _columns = {
+        'service_portfolio_ids': fields.many2many('sustenuto.service.portfolio', 'sustenuto_service_portfolio_lead_rel', 'lead_id', 'service_portfolio_id', 'Service Portfolios'),
+    }
+
+crm_lead()
+
+class project_project(osv.osv):
+    _name = 'project.project'
+    _inherit = 'project.project'
+    _columns = {
+        'service_portfolio_ids': fields.many2many('sustenuto.service.portfolio', 'sustenuto_service_portfolio_project_rel', 'project_id', 'service_portfolio_id', 'Service Portfolios'),
+    }
+
+project_project()
+
+class sales_order(osv.osv):
+    _name = 'sales.order'
+    _inherit = 'sales.order'
+    _columns = {
+        'service_portfolio_ids': fields.many2many('sustenuto.service.portfolio', 'sustenuto_service_portfolio_sale_rel', 'sale_order_id', 'service_portfolio_id', 'Service Portfolios'),
+    }
+
+sales_order()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:# -*- coding: utf-8 -*-
+

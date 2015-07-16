@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="sale_header" model="ir.header_webkit">
+            <field name="footer_html"><![CDATA[
+			<html>
+			   <head>
+			       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+			       <script>
+			           function subst() {
+			           var vars={};
+			           var x=document.location.search.substring(1).split('&');
+			           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+			           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+			           for(var i in x) {
+			           var y = document.getElementsByClassName(x[i]);
+			           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+			               }
+			           }
+			       </script>
+			       <style type="text/css">
+			       
+			           ${css}
+			       </style>
+			   </head>
+			   <body style="border:0; margin: 0;" onload="subst()">
+			       <table class="header" style="width: 100%">
+			           <tr>
+			           		<td style="text-align:left;font-size:10;" width="33%">
+			           		I.C.Y. B.V.</br>
+			           		postbus 193 / P.O. Box 193</br>
+			           		8530 AD Lemmer, The Netherlands</br>
+			           		Houtsaachmole 35 8531 WC Lemmer</br>
+			           		t +31 (0) 881 23 13 21</br>
+			           		f +31 (0) 514 56 42 52
+			           		</td 
+			           		<td style="text-align:left;font-size:10;" width="33%">
+			           		iseewhy@icy.nl</br>
+			           		www.icy.nl</br>
+			           		SNS NL51SNSB0904426270</br>
+			           		BTW NL814935758B01</br>
+			           		K.v.K. 01108447
+			           		</td 
+			           		<td style="text-align:left;font-size:8;" width="33%">
+			           		Op al onze aanbiedingen, verkopen en</br>
+			           		leveringen zijn onze algemene voorwaarden</br>
+			           		van kracht, zoals gedeponeerd bij</br>
+			           		de Kamer van Koophandel en Fabrieken</br>
+			           		te Leeuwarden. Op verzoek zenden wij u</br>
+			           		hiervan graag een kopie.
+			           		</td 
+			           </tr>
+			       </table>
+			   </body>
+		</html>
+			            ]]></field>
+			            <field name="orientation">Portrait</field>
+			            <field name="format">A4</field>
+			            <field name="html"><![CDATA[
+			<html>
+			   <head>
+			       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+			       <script>
+			           function subst() {
+			           var vars={};
+			           var x=document.location.search.substring(1).split('&');
+			           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+			           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+			           for(var i in x) {
+			           var y = document.getElementsByClassName(x[i]);
+			           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+			               }
+			           }
+			       </script>
+			       <style type="text/css">
+			       
+			           ${css}
+			       </style>
+			   </head>
+			</html>]]>
+			            </field>
+			            <field eval="45.0" name="margin_top"/>
+			            <field eval="25.0" name="margin_bottom"/>
+			            <field eval="25.0" name="margin_right"/>
+			            <field name="css"><![CDATA[
+			
+			body, table, td, span, div {
+			    font-family: Helvetica, Arial;
+			}
+			 
+			body {
+			font-family: Helvetica, Arial;
+			font-size:9px; 
+			}
+			
+			
+			.header {
+			    margin-left:0;
+			    text-align:left;
+			    width:300px;
+			    font-size:12;
+			}
+			
+			.title {
+			font-size:16;
+			font-weight: bold;
+			font-family: Helvetica, Arial;
+			}
+			
+			.b12 {
+			font-size:12;
+			font-weight: bold;
+			font-family: Helvetica, Arial;
+			}
+
+			.i12 {
+			font-size:12;
+			font-weight: italic;
+			font-family: Helvetica, Arial;
+			}
+			
+			.basic_table{
+			width:93%;
+			text-align:center;
+			border:1px solid lightGrey;
+			border-collapse: collapse;
+			font-family: Helvetica, Arial;
+			padding-bottom:20px;
+			}
+			            
+			.basic_table td {
+			border:1px solid lightGrey;
+			font-size:11px;
+			font-family: Helvetica, Arial;
+			}
+			
+			.list_table {
+			border-bottom:1px solid black;
+			font-size:11px;
+			padding-top:20px;
+			border-collapse: collapse;
+			font-family: Helvetica, Arial;
+			font-weight: bold;
+			width:93%;
+			
+			}
+			.tbl_header{
+			    width:93%;
+			    font-size:10px;
+			   
+			   	font-family: Helvetica, Arial;
+			    border:1px solid lightGrey;
+			    border-collapse: collapse;
+			}
+			.tr_bottom_line{
+			    border-bottom: thin solid black;
+			    width:93%;
+			    font-size:12px;
+			    
+			   	font-family: Helvetica, Arial;
+			}
+			.tr_bottom_line_dark_grey{
+			    border-top: thin solid #ccc;
+			    width:93%;
+			    font-size:12px;
+			    font-family: Helvetica, Arial;
+			}
+			.tr_top{
+			            border-top: 1px solid black;
+			    		width:93%;
+			    		font-size:12px;
+			            font-family: Helvetica, Arial;
+			            text-align:left;
+			            }
+	
+			.td_f12{
+			    font-size:12px;
+			    font-family: Helvetica, Arial; 
+			    
+			}
+			.shipping_address{
+               margin-bottom: 10px;
+               width:93%; 
+               font-size:12px;
+               text-align:left;
+             }
+			.recipient{
+				font-family: Helvetica, Arial;
+				left: 8%;
+			}
+		
+			
+			]]>
+			            </field>
+			            <field name="name">Sale Header</field>
+		</record>
+        <report 
+        		auto="False" 
+        		id="report_sale_order" 
+        		model="sale.order" 
+        		name="sale.order"
+                file="icy_sale_webkit/report/icy_sale_order.mako" 
+        		string="Quotation / Order"
+                usage="default"
+        		report_type="webkit"
+        		webkit_header="sale_header"/>
+
+    </data>
+</openerp>

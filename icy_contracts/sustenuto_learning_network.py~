@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+##############################################################################
+#
+##############################################################################
+
+from tools.translate import _
+from osv import fields, osv
+from datetime import datetime
+import netsvc
+
+class sustenuto_learning_network(osv.osv):
+    _name = 'sustenuto.learning.network'
+    _description = 'Learning Network'
+    _columns = {
+        'name': fields.char('Name', size=64, required=True, translate=True),
+        'parent_id': fields.many2one('sustenuto.learning.network', 'Parent Network', select=True),
+        'child_ids': fields.one2many('sustenuto.learning.network', 'parent_id', 'Child Networks'),
+        'partner_ids': fields.many2many('res.partner', 'sustenuto_learning_network_rel', 'learning_network_id', 'partner_id', 'Partners'),
+                }
+
+    def _check_recursion(self, cr, uid, ids, context=None):
+        level = 100
+        while len(ids):
+            cr.execute('select distinct parent_id from sustenuto_learning_network where id IN %s', (tuple(ids), ))
+            ids = filter(None, map(lambda x:x[0], cr.fetchall()))
+            if not level:
+                return False
+            level -= 1
+        return True
+
+    _constraints = [
+        (_check_recursion, 'Error ! You cannot create recursive Networks.', ['parent_id'])
+    ]
+
+sustenuto_learning_network()
+
+class res_partner(osv.osv):
+    _inherit = 'res.partner'
+    _columns = {
+        'learning_network_ids': fields.many2many('sustenuto.learning.network', 'sustenuto_learning_network_rel', 'partner_id', 'learning_network_id', 'Learning Networks'),
+    }
+
+res_partner()
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:# -*- coding: utf-8 -*-
+

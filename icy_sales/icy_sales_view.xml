@@ -1,0 +1,988 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_sales_view_partner_form">
+        <field name="name">icy.sales.view.partner.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="crm.view_partners_form_crm1"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="category_id" position="attributes">
+                <attribute name="placeholder">Partner Categorie...</attribute>
+		<attribute name="domain">[('company_category','=',is_company)]</attribute>
+            </field>
+            <xpath expr="//sheet/notebook/page[@string='Contacts']/field[@name='child_ids']/form[@string='Contact']/sheet/div/field[@name='category_id']" position="attributes">
+		<attribute name="domain">[('company_category','=',False)]</attribute>
+            </xpath>
+	    <button name="448" position="replace"/> 
+            <page string="History" position="before">
+                <page string="Afspraken">
+		    <button type="action" string="Afspraak Toevoegen" name="448" context="{'search_default_partner_ids': active_id, 'default_partner_ids' : [active_id]}"/> 
+                    <field name="meeting_ids" readonly="True">
+			<tree string="Afspraken">
+			    <field name="name" string="Subject"/>
+			    <field name="user_id"/>
+			    <field name="date"/>
+			    <field name="meeting_report_state"/>
+			    <field name="duration"/>
+			    <field name="categ_ids" widget="many2many_tags"/>
+			    <field name="state" invisible="True"/>
+			</tree>
+		    </field>
+		</page>
+                <page string="Telefoongesprekken">
+<!--		    <group colspan="4" col="2">
+               	    	<button string="Schedule Other Call" icon="terp-call-start" name="453" type="action" context="{'default_partner_id':active_id}"/> 
+		    </group> -->
+                    <field name="phonecall_ids">
+			<tree string="Telefoongesprekken">
+	                    <field name="date"/>
+                	    <field name="user_id"/>
+                	    <field name="name" string="Onderwerp"/>
+                	    <field name="partner_id" on_change="onchange_partner_id(partner_id)" string="Gesproken met"/>
+                	    <field name="partner_phone"/>
+                	    <field name="opportunity_id" string="Prospect" on_change="on_change_opportunity(opportunity_id)"/>
+			</tree>
+		    </field>
+		</page>
+                <page string="Verkoopkansen" attrs="{'invisible': [('customer', '=', False)]}">
+                    <field name="opportunity_ids">
+			<tree string="Leads/Prospects" colors="blue:state in ('draft')">
+			    <field name="date_open" widget="date"/>
+	                    <field name="stage_id"/>
+	                    <field name="state" invisible="True"/>
+	                    <field name="user_id"/>
+			    <field name="ref"/>
+			    <field name="planned_revenue"/>
+			    <field name="probability"/>
+			    <field name="name"/>
+			    <field name="title_action"/>
+			    <field name="date_action_next"/>
+			</tree>
+		    </field>
+		</page>
+                <page string="Verkoopoffertes" attrs="{'invisible': [('customer', '=', False)]}">
+                    <field name="sales_quotation_ids">
+			<tree string="Verkooporders" colors="red:(date_expected&lt;current_date)">
+			    <field name="date_order" widget="date"/>
+	                    <field name="state"/>
+	                    <field name="user_id"/>
+			    <field name="name"/>
+			    <field name="client_order_ref"/>
+			    <field name="amount_total"/>
+			    <field name="date_expected"/>
+			    <field name="date_callback"/>
+			    <field name="callback_user_id"/>
+			</tree>
+		    </field>
+		</page>
+                <page string="Verkooporders" attrs="{'invisible': [('customer', '=', False)]}">
+                    <field name="sales_order_ids" context="{'state':'manual'}">
+			<tree string="Verkooporders" colors="red:(date_expected&lt;current_date)">
+			    <field name="date_confirm" widget="date"/>
+	                    <field name="state"/>
+	                    <field name="user_id"/>
+			    <field name="name"/>
+			    <field name="client_order_ref"/>
+			    <field name="amount_total"/>
+			    <field name="date_expected"/>
+			</tree>
+		    </field>
+		</page>
+		<page string="Leveringen">   <!-- attrs="{'invisible': [('customer', '=', False)]}"> -->
+		    <field name="stock_picking_ids"/>  <!-- context="{'type':'out'}"/> --> 
+		</page>
+                <page string="Verkoopfacturen" attrs="{'invisible': [('customer', '=', False)]}">
+                    <field name="sales_invoice_ids" nolabel="1" context="{'default_partner_id':active_id}" readonly="True">
+			<tree string="Invoices" colors="blue:state in ('draft');green:state in ('paid');red:(date_due&lt;current_date)">
+			    <field name="date_invoice" widget="date"/>
+			    <field name="date_due" widget="date"/>
+			    <field name="state"/>
+	                    <field name="amount_untaxed" sum="Untaxed Amount"/>
+	                    <field name="amount_total" sum="Total Amount"/>
+			    <field name="number"/>
+			    <field name="name"/>
+			</tree>
+		    </field>
+		</page>
+<!--                <page string="Communicatie">
+                    <field name="message_ids"/>
+		</page> -->
+            </page>
+            <div name="buttons" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </div>
+            <page string="Internal Notes" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </page>
+            <page string="History" position="attributes">
+                <attribute name="string">Servicehistorie</attribute>
+            </page>
+            <page string="Internal Notes" position="before">
+                <page string="Interne Taken">
+  		    <field name="icy_task_ids" nolabel="1" context="{'default_partner_id':active_id}">
+		        <tree string="Taken">
+			    <field name="name"/>
+			    <field name="state"/>
+			    <field name="icy_user_name"/> 
+			    <field name="sale_order_id" string="Betreft"/>
+<!-- 			    <field name="user_name"/> -->
+			    <field name="date_deadline"/>
+			    <field name="icy_close_date" widget="date"/> 
+		        </tree>
+		    </field>
+		</page>
+            </page> 
+            <xpath expr="//sheet/notebook/page[@string='Contacts']/field[@name='child_ids']/form/sheet/div/label[@for='use_parent_address']" position="after">
+		<newline/>
+                <field name="mailing_allowed" string="Mailing"/><label for="mailing_allowed"/>
+		<newline/>
+                <field name="delivery_note_signature" string="Handtekening Pakbon"/><label for="delivery_note_signature"/>
+            </xpath>
+            <field name="active" position="before">
+                <separator string="Communicatie Instellingen" colspan="4" col="2"/>
+            </field>
+	    <field name="user_id" position="replace"/>
+	    <field name="website" position="after">
+		<field name="user_id" modifiers="{}" string="Account Manager"/>
+	    </field>
+            <xpath expr="//sheet/notebook/page[@string='Sales &amp; Purchases']/group/group/field[@name='customer']" position="before">
+                <separator string="Relatietype" colspan="4" col="2"/>
+                <field name="lead"/>
+                <field name="prospect"/>
+            </xpath>
+            <xpath expr="//sheet/notebook/page[@string='Sales &amp; Purchases']/group/group/field[@name='lang']" position="after">
+                <field name="sale_order_contact_id" domain="[('parent_id','=',active_id)]"/>
+                <field name="sale_order_text_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_view_partner_form2">
+        <field name="name">icy.sales.view.partner.form2</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="product.view_partner_property_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <group name="pricelists" position="before">
+                <separator string="Prijslijsten" colspan="4" col="2"/>
+		<field name="discount_ids" nolabel="1" context="{'default_partner_id':active_id}">
+		    <tree string="Discounts" editable="bottom">
+			<field name="product_id"/>
+			<field name="product_category_id"/>
+			<field name="discount_pct"/>
+		    </tree>
+		</field>
+            </group>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_view_partner_form3">
+        <field name="name">icy.sales.view.partner.form2</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <div t-if="record.fax.raw_value" position="after">
+                <div t-if="record.type.raw_value">Type: <field name="type"/></div>
+                <div t-if="record.street.raw_value"><field name="street"/></div>
+                <div t-if="record.zip.raw_value"><field name="zip"/> <field name="city"/></div>
+            </div>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_partner_address_form">
+        <field name="name">icy.sales.partner.address.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="partner_zip_address.icy_partner_address_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="zip_id" position="attributes">
+		<attribute name="string">Postcode</attribute>
+	    </field>
+	    <field name="street_id" position="attributes">
+		<attribute name="string">Straat</attribute>
+	    </field>
+	    <field name="street_nbr" position="attributes">
+		<attribute name="string">Huisnummer</attribute>
+	    </field>
+	    <field name="zip_id" position="before">
+		<separator string="Bezoekadres" colspan="4" col="2"/>
+	    </field>
+<!--	    <field name="street_bus" position="replace">
+		<field name="country_id"/>
+	    </field> -->
+<!--	    <field name="street" position="before">
+		<field string="last_name"/>
+		<field string="first_name"/>
+		<field string="middle_name"/>
+		<field string="gender"/>
+	    </field> -->
+       </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_view_sale_order_form">
+        <field name="name">icy.view.sale.order.form</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="partner_id" position="after">
+		<field name="contact_id" domain="[('parent_id','=',partner_id)]"/>
+	    </field>
+            <field name="shop_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="fiscal_position" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="note" position="attributes">
+                <attribute name="placeholder">Koptekst...</attribute>
+                <attribute name="string">Koptekst</attribute>
+            </field>
+	    <field name="note" position="before">
+		<group colspan="4" col="2">
+                    <separator string="Koptekst"/>
+                    <separator string="Voettekst"/>
+		</group>
+ 	    </field>
+	    <field name="note" position="after">
+                <field name="note_footer" string="Voettekst" class="oe_inline" placeholder="Voettekst..."/>
+ 	    </field>
+	    <field name="payment_term" position="replace"/>
+<!--	    <field name="order_policy" position="replace"/> -->
+	    <field name="partner_shipping_id" position="after">
+		<field name="partner_category_id" widget="many2many_tags" readonly="True" string="Partner Category"/>
+		<field name="first_quotation"/>
+		<field name="prepayment_pct"/>
+		<field name="payment_term" required="True" on_change="onchange_payment_term(payment_term)"/>
+	    </field>
+	    <field name="date_order" position="after">
+		<field name="date_expected" required="True"/>
+		<field name="date_callback"/>
+		<field name="callback_user_id"/>
+		<field name="exp_decision_date"/>
+		<field name="exp_decision_rate"/>
+		<field name="so_type_id" on_change="onchange_so_type(so_type_id)"/>
+		<field name="cc_quotation" invisible="True"/>
+		<field name="cc_product_id" attrs="{'invisible': [('cc_quotation', '!=', True)]}"/>
+		<field name="cc_amount" attrs="{'invisible': [('cc_quotation', '!=', True)]}"/>
+	    </field>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='name']" position="after">
+                <field name="date_expected"/>
+                <field name="date_tbd"/>
+            </xpath>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/group/group/field[@name='tax_id']" position="after">
+                <field name="date_expected"/>
+                <field name="date_tbd" string="Nader Te Bepalen"/>
+            </xpath>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']" position="attributes">
+                <attribute name="context">{'default_date_expected':date_expected}</attribute>
+            </xpath>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='discount']" position="before">
+                <field name="discount1" groups="sale.group_discount_per_so_line" on_change="onchange_icy_discount(discount1,discount2)"/>
+                <field name="discount2" groups="sale.group_discount_per_so_line" on_change="onchange_icy_discount(discount1,discount2)"/>
+            </xpath>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/group/group/label[@for='discount']" position="before">
+                <field name="discount1" groups="sale.group_discount_per_so_line" on_change="onchange_icy_discount(discount1,discount2)"/>
+                <field name="discount2" groups="sale.group_discount_per_so_line" on_change="onchange_icy_discount(discount1,discount2)"/>
+            </xpath>
+<!--            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </xpath> -->
+<!--            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/group/group/div[@name='discount']/field[@name='discount']" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </xpath> -->
+<!--            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
+                <attribute name="required">True</attribute>
+            </xpath> -->
+<!--            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/group/group/field[@name='move_ids']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath> -->
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/div/field[@name='invoice_lines']" position="before">
+                <separator string="Staffelprijzen" colspan="4" col="2"/>
+		<field name="volume_dscnt_ids" nolabel="1" context="{'default_order_line_id':active_id}">
+		    <tree string="Staffelprijzen" editable="bottom">
+			<field name="qty_discount"/>
+			<field name="volume_price"/>
+		    </tree>
+		</field>
+            </xpath>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/div/field[@name='invoice_lines']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/form/div/label[@for='invoice_lines']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+<!--            <xpath expr="//page[@string='Other Information']/group/group[@name='sale_pay']/field[@name='payment_term']" position="attributes">
+                <attribute name="on_change">onchange_payment_term(payment_term)</attribute>
+            </xpath> -->
+            <xpath expr="//page[@string='Order Lines']/field[@name='order_line']/tree" position="attributes">
+		<attribute name="editable">bottom</attribute>
+	    </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sale_order_stock_form">
+        <field name="name">icy.sale.order.stock.form</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale_stock.view_order_form_inherit"/> 
+        <field name="arch" type="xml">
+            <data>
+            	<field name="shop_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="move_ids" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field> 
+                <label for="move_ids" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </label> 
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_sale_order_crm_form">
+        <field name="name">icy.sale.order.crm.form</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale_crm.sale_view_inherit123"/> 
+        <field name="arch" type="xml">
+            <data>
+            	<field name="section_id" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field>
+                <field name="categ_ids" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </field> 
+            </data>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_view_sale_quotation_tree">
+        <field name="name">icy.view.sale.quotation.tree</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="colors">red:date_callback and (date_callback&lt;current_date)</attribute>
+                </tree>
+
+	    <field name="date_order" position="replace"/>
+	    <field name="state" position="replace"/>
+	    <field name="user_id" position="replace"/>
+	    <field name="partner_id" position="replace"/>
+	    <field name="name" position="before">
+		<field name="partner_id"/>
+		<field name="date_order"/>
+		<field name="state"/>
+		<field name="salesrep_id"/>
+		<field name="user_id"/>
+ 	    </field>
+	    <field name="name" position="after">
+		<field name="client_order_ref"/>
+ 	    </field>
+	    <field name="amount_total" position="after">
+		<field name="date_expected"/>
+		<field name="date_callback"/>
+		<field name="callback_user_id"/>
+		<field name="exp_decision_date"/>
+		<field name="exp_decision_rate"/>
+ 	    </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="icy_view_sale_order_tree">
+        <field name="name">icy.view.sale.order.tree</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="date_order" position="replace"/>
+	    <field name="state" position="replace"/>
+	    <field name="partner_id" position="replace"/>
+	    <field name="user_id" position="replace"/>
+	    <field name="name" position="before">
+		<field name="partner_id"/>
+		<field name="date_confirm"/>
+		<field name="week" invisible="True"/>
+		<field name="state"/>
+		<field name="invoiced_state"/>
+		<field name="salesrep_id"/>
+		<field name="user_id"/>
+ 	    </field>
+	    <field name="name" position="after">
+		<field name="client_order_ref"/>
+ 	    </field>
+	    <field name="amount_total" position="before">
+		<field name="amount_untaxed" sum="Amount Untaxed"/>
+		<field name="amount_residual" sum="Amount Residual"/>
+ 	    </field>
+	    <field name="amount_total" position="after">
+		<field name="date_expected"/>
+ 	    </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="icy_view_sale_order_search">
+        <field name="name">icy.view.sale.order.search</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <filter string="Salesperson" position="before">
+		<filter string="Account Manager" icon="terp-personal" domain="[]" context="{'group_by':'salesrep_id'}"/>
+ 	    </filter>
+	    <filter string="Order Date" position="before">
+		<filter string="Week Order Intake" icon="terp-go-month" domain="[]" context="{'group_by':'week'}"/>
+		<filter string="Verwachte Valdatum" icon="terp-go-month" domain="[]" context="{'group_by':'exp_decision_date'}"/>
+ 	    </filter>
+	    <field name="project_id" position="after">
+		<field name="week"/>
+	    </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_crm_meeting_tree">
+        <field name="name">icy.crm.meeting.tree</field>
+        <field name="model">crm.meeting</field>
+	<field name="inherit_id" ref="base_calendar.view_crm_meeting_tree"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="date" position="after">
+		<field name="categ_ids" widget="many2many_tags"/>
+		<field name="meeting_report_state"/>
+ 	    </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_crm_todo_tree">
+        <field name="name">icy.crm.todo.tree</field>
+        <field name="model">project.task</field>
+	<field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="name" position="after">
+		<field name="partner_id"/>
+		<field name="sale_order_id"/>
+ 	    </field>
+            <field name="state" position="attributes">
+                <attribute name="invisible">False</attribute>
+                <attribute name="readonly">False</attribute>
+            </field>
+            <field name="date_deadline" position="attributes">
+                <attribute name="invisible">False</attribute>
+            </field>
+            <field name="date_start" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="date_end" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_view_task_form">
+        <field name="name">icy.view.task.form</field>
+        <field name="model">project.task</field>
+	<field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="replace">
+            </field>
+	    <field name="user_id" position="after">
+		<field name="partner_id"/>
+		<field name="icy_lead_id"/>
+		<field name="sale_order_id"/>
+		<field name="helpdesk_id"/>
+ 	    </field>
+<!--            <field name="timebox_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field> -->
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_partner_category_form">
+        <field name="name">icy.sales.partner.category.form</field>
+        <field name="model">res.partner.category</field>
+	<field name="inherit_id" ref="base.view_partner_category_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+		<field name="company_category"/>
+		<group colspan="4" col="2">
+                <separator string="Prijslijsten"/>
+		<newline/>
+		<field name="discount_ids" nolabel="1" context="{'default_partner_category_id':active_id}">
+		    <tree string="Discounts" editable="bottom">
+			<field name="product_id"/>
+			<field name="product_category_id"/>
+			<field name="discount_pct"/>
+		    </tree>
+		</field>
+		</group>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="icy_sales_partner_category_tree">
+        <field name="name">icy.sales.partner.category.tree</field>
+        <field name="model">res.partner.category</field>
+	<field name="inherit_id" ref="base.view_partner_category_list"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="after">
+		<field name="company_category"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_product_form">
+        <field name="name">icy.sales.product.form</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="description" position="after">
+                <separator string="Prijslijsten" colspan="4" col="2"/>
+		<field name="discount_ids" nolabel="1" context="{'default_product_id':active_id}">
+		    <tree string="Discounts" editable="bottom">
+			<field name="partner_id"/>
+			<field name="partner_category_id"/>
+			<field name="discount_pct"/>
+		    </tree>
+		</field>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_product_category_form">
+        <field name="name">icy.sales.product.category.form</field>
+        <field name="model">product.category</field>
+	<field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="type" position="after">
+		<group colspan="4" col="2">
+                <separator string="Prijslijsten"/>
+		<newline/>
+		<field name="discount_ids" nolabel="1" context="{'default_product_category_id':active_id}">
+		    <tree string="Discounts" editable="bottom">
+			<field name="partner_id"/>
+			<field name="partner_category_id"/>
+			<field name="discount_pct"/>
+		    </tree>
+		</field>
+		</group>
+            </field>
+        </field>
+    </record>
+
+    <record id="icy_action_quotations" model="ir.actions.act_window">
+        <field name="name">Offertes en Verkooporders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="sale.view_quotation_tree"/>
+        <field name="view_mode">tree,form,calendar,graph</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to create a quotation, the first step of a new sale.
+            </p><p>
+              OpenERP will help you handle efficiently the complete sale flow:
+              from the quotation to the sales order, the
+              delivery, the invoicing and the payment collection.
+            </p><p>
+              The social feature helps you organize discussions on each sales
+              order, and allow your customers to keep track of the evolution
+              of the sales order.
+            </p>
+        </field>
+    </record>
+
+<!--    <menuitem id="menu_sale_quotations_orders" action="icy_action_quotations" parent="base.menu_sales" sequence="10"/> -->
+    <menuitem name="Taken" parent="base.menu_sales" id="icy_sales.tasks" sequence="9" action="project.action_view_task"/> 
+
+    <record model="ir.ui.view" id="icy_crm_make_sale">
+        <field name="name">icy.crm.make.sale</field>
+        <field name="model">crm.make.sale</field>
+	<field name="inherit_id" ref="sale_crm.view_crm_make_sale"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="close" position="attributes">
+                <attribute name="invisible">True</attribute>
+ 	    </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_view_lead_address_form">
+        <field name="name">icy.sales.view.lead.address.form</field>
+        <field name="model">crm.lead</field>
+	<field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="partner_id" position="replace">
+	    </field>
+            <field name="state_id" position="attributes">
+                <attribute name="invisible">True</attribute>
+	    </field>
+	    <div class="oe_title" position="after">
+		<group colspan="4">
+    		    <group>
+	                <field name="zip_id" on_change="onchange_zip_id(zip_id)"/>
+        	        <field name="street_id" domain="[('city_id','=',zip_id)]" on_change="onchange_street_id(zip_id, street_id, street_nbr, street_bus)"/>
+        	        <field name="street_nbr" on_change="onchange_street_id(zip_id, street_id, street_nbr, street_bus)"/>
+        	        <field name="street_bus" on_change="onchange_street_id(zip_id, street_id, street_nbr, street_bus)"/>
+		    </group>
+		    <group>
+                        <field name="partner_id" string="Customer" on_change="on_change_partner(partner_id)" options="{&quot;create_name_field&quot;: &quot;name&quot;}" context="{'default_name': contact_name, 'default_street': street, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_function': function, 'default_phone': phone, 'default_mobile': mobile, 'default_fax': fax, 'default_email': email_from, 'default_user_id': user_id, 'default_section_id': section_id}"/>
+		    </group>
+		</group>
+	    </div>
+<!--            <page string="Internal Notes" position="after">
+                <page string="Interne Taken">
+  		    <field name="icy_task_ids" nolabel="1" context="{'default_lead_id':active_id}">
+		        <tree string="Taken">
+			    <field name="name"/>
+			    <field name="lead_id"/>
+ 			    <field name="user_name"/> 
+			    <field name="date_deadline"/>
+			    <field name="state"/>
+		        </tree>
+		    </field>
+		</page>
+            </page> -->
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="icy_sales_view_opportunity_form">
+        <field name="name">icy.sales.view.opportunity.form</field>
+        <field name="model">crm.lead</field>
+	<field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <page string="Internal Notes" position="after">
+                <page string="Interne Taken">
+  		    <field name="icy_task_ids" nolabel="1" context="{'default_lead_id':active_id}">
+		        <tree string="Taken">
+			    <field name="name"/>
+			    <field name="lead_id"/>
+<!-- 			    <field name="user_name"/> -->
+			    <field name="date_deadline"/>
+			    <field name="state"/>
+		        </tree>
+		    </field>
+		</page>
+            </page> 
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_view_opportunity_task_form">
+        <field name="name">icy.sales.view.opportunity.task.form</field>
+        <field name="model">crm.lead</field>
+	<field name="inherit_id" ref="crm_todo.crm_todo_opportunity_add"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <page string="Tasks" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </page> 
+        </field>
+    </record>
+
+<!--    <record model="ir.ui.view" id="icy_lead_todo_tree">
+        <field name="name">icy.lead.todo.tree</field>
+        <field name="model">project.task</field>
+	<field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <field name="name" position="after">
+		<field name="icy_lead_id"/>
+ 	    </field>
+            <field name="state" position="attributes">
+                <attribute name="invisible">False</attribute>
+                <attribute name="readonly">False</attribute>
+            </field>
+            <field name="date_deadline" position="attributes">
+                <attribute name="invisible">False</attribute>
+            </field>
+            <field name="date_start" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            <field name="date_end" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+        </field>
+    </record> -->
+
+<!--    <menuitem name="Taken" parent="base.menu_sales" id="icy_sales.tasks" sequence="9" action="project.action_view_task"/> -->
+
+    <record model="ir.ui.view" id="icy_sales_account_payment_term_form">
+        <field name="name">icy.sales.account.payment.term.form</field>
+        <field name="model">account.payment.term</field>
+	<field name="inherit_id" ref="account.view_payment_term_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="active" position="after">
+                <field name="order_policy"/>
+            </field> 
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_meeting_form">
+        <field name="name">icy.sales.meeting.form</field>
+        <field name="model">crm.meeting</field>
+	<field name="inherit_id" ref="base_calendar.view_crm_meeting_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="description" position="after">
+                <label for="meeting_report"/>
+                <field name="meeting_report"/>
+            </field> 
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_sales_partner_kanban">
+        <field name="name">icy.sales.partner.kanban</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//templates//field[@name='city']" position="before">
+                <li t-if="record.street.raw_value"><field name="street"/></li>
+                <li t-if="record.city.raw_value and record.country.raw_value"><field name="city"/></li>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_task_search">
+        <field name="name">icy.task.search</field>
+        <field name="model">project.task</field>
+	<field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//search/group/filter[@string='End Date']" position="after">
+                <filter string="Taaktype" icon="terp-personal" domain="[]" context="{'group_by':'context_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_invoice_tree">
+        <field name="name">icy.invoice.tree</field>
+        <field name="model">account.invoice</field>
+	<field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+                <tree position="attributes">
+                    <attribute name="colors">blue:state == 'draft';red:(date_due&lt;current_date);black:state in ('proforma','proforma2','open');gray:state == 'cancel'</attribute>
+                </tree>
+		<field name="date_due" position="before">
+		    <field name="week" invisible="True"/>
+		</field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="icy_view_invoice_search">
+        <field name="name">icy.view.invoice.search</field>
+        <field name="model">account.invoice</field>
+	<field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <filter string="Invoice Date" position="before">
+		<filter string="Week" icon="terp-go-month" domain="[]" context="{'group_by':'week'}"/>
+ 	    </filter>
+	    <field name="period_id" position="after">
+		<field name="week"/>
+	    </field>
+        </field>
+    </record> 
+
+
+    <record model="ir.actions.act_window" id="base.action_partner_form">
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+    <record model="ir.actions.act_window.view" id="base.action_partner_form_view1">
+        <field name="sequence" eval="5"/>
+    </record>
+
+    <record model="ir.ui.view" id="view_sotexts_tree">
+        <field name="name">view.sotexts.tree</field>
+        <field name="model">sale.order.texts</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Teksten Verkooporder">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sotexts_form">
+        <field name="name">view.sotexts.form</field>
+        <field name="model">sale.order.texts</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Teksten Verkooporder">
+		<field name="name"/>
+                <field name="note"/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sotexts">
+        <field name="name">Teksten Verkooporder</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.texts</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sotexts_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sotexts_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sotexts_tree"/>
+        <field name="act_window_id" ref="action_sotexts"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sotexts_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sotexts_form"/>
+        <field name="act_window_id" ref="action_sotexts"/>
+    </record>
+
+    <menuitem name="Teksten Verkooporder" id="menu_sotexts_form" action="action_sotexts" parent = "base.menu_base_config" sequence="150"/>
+
+    <record model="ir.ui.view" id="view_sotype_tree">
+        <field name="name">view.sotype.tree</field>
+        <field name="model">sale.order.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Type Verkooporder">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sotype_form">
+        <field name="name">view.sotype.form</field>
+        <field name="model">sale.order.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Type Verkooporder">
+		<group>
+		<field name="name"/>
+		<field name="cc_quotation"/>
+		</group>
+		<group>
+                <field name="note"/>
+		</group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sotype">
+        <field name="name">Types Verkooporder</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sotype_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sotype_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sotype_tree"/>
+        <field name="act_window_id" ref="action_sotype"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sotype_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sotype_form"/>
+        <field name="act_window_id" ref="action_sotype"/>
+    </record>
+
+    <menuitem name="Types Verkooporder" id="menu_sotype_form" action="action_sotype" parent = "base.menu_base_config" sequence="160"/>
+
+	<record id="view_so_line_search" model="ir.ui.view">
+	    <field name="name">view.so.line.search</field>
+	    <field name="model">sale.order.line</field>
+	    <field name="arch" type="xml">
+                <search string="Search Detail">
+                    <group string="Search..." expand="0">
+		    	<field name="product_id" select='1'/>
+		    	<field name="order_partner_id" select='1'/>
+		    	<field name="order_id" select='1'/>
+                    </group>
+                    <newline />
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" name="grouptype" context="{'group_by':'product_id'}" />
+                        <filter string="Partner" name="grouptype" context="{'group_by':'order_partner_id'}" />
+                        <filter string="Order" name="grouptype" context="{'group_by':'order_id'}" />
+                        <filter string="State" name="grouptype" context="{'group_by':'state'}" />
+                    </group>
+                </search>
+	    </field>
+	</record>
+
+        <record id="view_so_line_tree" model="ir.ui.view">
+            <field name='name'>view.so.line.tree</field>
+            <field name='model'>sale.order.line</field>
+            <field name='arch' type='xml'>
+		<tree string="Verkooporderlijnen">
+		    <field name="product_id"/>
+		    <field name="name"/>
+		    <field name="order_partner_id"/>
+		    <field name="order_id"/>
+		    <field name="date_expected"/>
+		    <field name="product_uom_qty"/>
+		    <field name="qty_delivered"/>
+<!--		    <field name="received_qty"/> -->
+<!--		    <field name="invoiced_qty"/> -->
+		    <field name="price_unit"/>
+		    <field name="price_subtotal"/>
+		    <field name="state"/>
+		    <field name="order_state"/>
+		    <field name="invoiced"/>
+		</tree>
+	    </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sale_line_form">
+            <field name="name">Verkooporderlijnen</field>
+            <field name='res_model'>sale.order.line</field>
+            <field name="view_mode">tree</field>
+            <field name="view_type">form</field>
+	    <field name="view_id" ref="view_so_line_tree"/>
+	    <field name="search_view_id" ref="view_so_line_search"/>
+        </record>
+
+        <menuitem name="Verkooporderlijnen" parent="base.menu_sales" id="menu_so_line" sequence="100" action="action_sale_line_form"/>
+
+    <record model="ir.ui.view" id="icy_sale_advance_payment_inv_form">
+        <field name="name">icy.sale.advance.payment.inv.form</field>
+        <field name="model">sale.advance.payment.inv</field>
+	<field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+		<field name="sale_id" invisible="True"/>
+                <field name="picking_id" on_change="onchange_picking_id(picking_id)" attrs="{'invisible': [('advance_payment_method','!=','fixed')]}" domain="[('sale_id','=',sale_id)]"/>
+            </field> 
+        </field>
+    </record>
+    <record model="ir.ui.view" id="icy_order_advance_payment_inv_form">
+        <field name="name">icy.order.advance.payment.inv.form</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <button name="295" position="attributes">
+		<attribute name="context">{'default_sale_id':active_id}</attribute>
+            </button> 
+        </field>
+    </record>
+
+    </data>
+</openerp>
+

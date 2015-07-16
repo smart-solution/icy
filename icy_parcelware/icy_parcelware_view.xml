@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record id="view_parcelware_save" model="ir.ui.view">
+        <field name="name">Save File</field>
+        <field name="model">export.parcelware</field>
+        <field name="arch" type="xml">
+            <form string="Parcelware bestand opslaan" version="7.0">
+                <label string="Bestand opslaan."/>
+                <field name="filename_field"/>
+                <field name="file_save" readonly="True" filename="filename_field"/>
+                <button name="create_file" string="Bestand opslaan" type="object" class="oe_highlight" attrs="{'invisible':[('file_save','!=',False)]}"/>
+                <button string="Cancel" class="oe_link" special="cancel" />
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_parcelware_save" model="ir.actions.act_window">
+        <field name="name">Save File</field> 
+        <field name="type">ir.actions.act_window</field> 
+        <field name="res_model">export.parcelware</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_parcelware_save"/>
+        <field name="target">new</field>
+    </record> 
+     
+    <record model="ir.ui.view" id="icy_view_picking_out_form">
+        <field name="name">icy.view.picking.out.form</field>
+        <field name="model">stock.picking.out</field>
+        <field name="inherit_id" ref="stock.view_picking_out_form"/>
+        <field name="arch" type="xml">
+           <xpath expr="/form/header//button[@name='331']" position="replace"> 
+               <button name="%(icy_parcelware.action_parcelware_save)d" string="Parcelware" type="action" states="done" class="oe_highlight"/> 
+               <button name="331" string="Return Products" states="done" type="action"/> 
+           </xpath>             
+        </field>
+    </record>
+
+    </data>
+</openerp>
+

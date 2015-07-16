@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <!--
+       learning_network Views 
+   -->
+
+    <record model="ir.ui.view" id="view_learning_network_tree">
+        <field name="name">view.learning_network.tree</field>
+        <field name="model">learning.network</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Learning Networks">
+                <field name="complete_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_learning_network_form">
+        <field name="name">view.learning_network.form</field>
+        <field name="model">learning.network</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="learning_network">
+		<field name="name"/>
+                <field name="parent_id" />
+                <separator string="Partners" colspan="4" />
+                <field name="partner_ids" colspan="4" nolabel="1" />
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_learning_network">
+        <field name="name">Learning Networks</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">learning.network</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_learning_network_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_learning_network_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_learning_network_tree"/>
+        <field name="act_window_id" ref="action_learning_network"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_learning_network_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_learning_network_form"/>
+        <field name="act_window_id" ref="action_learning_network"/>
+    </record>
+
+    <menuitem name="Learning Networks" id="menu_learning_network_form" action="action_learning_network" parent = "base.menu_sales_configuration_misc" sequence="10"/>
+
+    </data>
+</openerp>
+

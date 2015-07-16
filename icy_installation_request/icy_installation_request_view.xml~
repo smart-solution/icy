@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_crm_case_section_software_form">
+        <field name="name">icy.crm.case.section.software.form</field>
+        <field name="model">crm.case.section</field>
+	<field name="inherit_id" ref="crm.crm_case_section_view_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <page string="Sales Team" position="before">
+		<page string="Software Versies">
+		    <field name="software_ids"  context="{'default_case_section_id':active_id}"/>
+		</page>
+            </page>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_installation_request_tree">
+        <field name="name">view.installation.request.tree</field>
+        <field name="model">crm.installation.request</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Installatieaanvraag">
+		<field name="name"/>
+                <field name="installer_id"/>
+                <field name="partner_id"/>
+<!--                <field name="zip_id"/> -->
+                <field name="case_section_id"/>
+                <field name="request_date"/>
+                <field name="installation_date"/> 
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_installation_request_form">
+        <field name="name">view.installation.request.form</field>
+        <field name="model">crm.installation.request</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Installatieaanvraag" version="7.0">
+                <header>
+                    <button name="button_in_progress" string="In Behandeling" type="object" states="new" groups="base.group_user" class="oe_highlight"/>
+                    <button name="button_problem" string="Probleem" type="object" states="in_progress" groups="base.group_user"/>
+                    <button name="button_done" string="Ingepland" type="object" states="new,in_progress,problem" groups="base.group_user" class="oe_highlight"/>
+                    <button name="button_cancel" string="Annuleren" type="object" states="new,in_progress,problem" groups="base.group_user"/>
+                    <button name="button_reset" string="Reset" type="object" states="done,cancel" groups="base.group_user"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,problem,done" statusbar_colors='{"problem":"red"}' class="oe_highlight"/>
+                </header> 
+                <sheet> 
+			<group colspan="4" col="2">
+			    <group>
+				<field name="name" readonly="True"/>
+				<field name="cust_zip" on_change="onchange_street_id(cust_zip, zip_id, street_id, street_nbr)"/>
+				<field name="zip_id" on_change="onchange_street_id(cust_zip, zip_id, street_id, street_nbr)" invisible="True"  required="True"/>
+				<field name="street_id" on_change="onchange_street_id(cust_zip, zip_id, street_id, street_nbr)" invisible="True"/>
+				<field name="street_nbr" on_change="onchange_street_id(cust_zip, zip_id, street_id, street_nbr)"/>
+				<field name="address" readonly="True"/>
+				<field name="first_name" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
+				<field name="middle_name" attrs="{'invisible': [('partner_id', '!=', False)]}"/>
+				<field name="last_name" attrs="{'invisible': [('partner_id', '!=', False)], 'required': [('partner_id', '=', False)]}"/>
+		                <field name="partner_id" required="True" domain="[('consumer', '=', True)]" string="Relatie" on_change="icy_onchange_partner_id(partner_id)"/>
+				<field name="phone"/>
+				<field name="mobile"/>
+				<field name="email"/>
+		        	<field name="create_partner" attrs="{'invisible': [('partner_id', '!=', False)]}" on_change="onchange_create_partner(partner_id, phone, email, mobile, zip_id, street_id, street_nbr, first_name, middle_name, last_name)"/>
+			    </group>
+			    <group>
+				<field name="user_id"/>
+				<field name="case_section_id"/>
+				<field name="software_version_id" domain="[('case_section_id','=',case_section_id)]" context="{'default_case_section_id':case_section_id}"/>
+				<field name="request_date"/>
+				<field name="installation_date"/>
+				<field name="installer_id" domain="[('installer','=',True)]"/>
+			    </group>
+			</group>
+			<group>
+			    <field name="connected_to"/>
+			    <field name="problem"/>
+			</group>
+		</sheet> 
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_installation_request_filter_form">
+        <field name="name">icy.installation.request.filter.form</field>
+        <field name="model">crm.installation.request</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+	    <search string="Search Purchase Order">
+                <field name="name" string="Reference"/>
+                <separator/>
+                <filter name="new" string="Nieuw" domain="[('state','=','new')]"/>
+                <filter name="in_progress" string="In Behandeling" domain="[('state','=','in_progress')]"/>
+                <filter name="problem" string="Probleem" domain="[('state','=','problem')]"/>
+                <filter name="done" string="Ingepland" domain="[('state','=','done')]"/>
+                <filter name="cancel" string="Geannuleerd" domain="[('state','=','cancel')]"/>
+                <separator/>
+                <field name="partner_id"/>
+                <field name="installer_id"/>
+                <field name="user_id"/>
+                <field name="case_section_id"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Status" icon="terp-partner" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Relatie" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Installateur" icon="terp-partner" domain="[]" context="{'group_by':'installer_id'}"/>
+                    <filter string="Gebruiker" icon="terp-partner" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Type Thermostaat" icon="terp-product" domain="[]" context="{'group_by':'case_section_id'}"/>
+                    <filter string="Aanvraagdatum" icon="terp-go-month" domain="[]" context="{'group_by':'request_date'}"/>
+                    <filter string="Geplande Installatiedatum" icon="terp-go-month" domain="[]" context="{'group_by':'installation_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_installation_request_graph">
+        <field name="name">installation.request.graph</field>
+        <field name="model">crm.installation.request</field>
+        <field name="arch" type="xml">
+            <graph string="Intallatieaanvragen" type="bar">
+                <field name="request_date"/>
+		<field name="one" operator="+"/>
+            </graph>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_installation_request">
+        <field name="name">Installatieaanvraag</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.installation.request</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="search_view_id" ref="icy_installation_request_filter_form"/>
+        <field name="view_id" ref="view_installation_request_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_installation_request_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_installation_request_tree"/>
+        <field name="act_window_id" ref="action_installation_request"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_installation_request_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_installation_request_form"/>
+        <field name="act_window_id" ref="action_installation_request"/>
+    </record>
+
+    <menuitem name="Installatieaanvragen" parent="icy_service.menu_service" id="icy_installation_request.menu_installation_request" sequence="12"/>
+    <menuitem name="Installatieaanvragen" parent="icy_installation_request.menu_installation_request" id="icy_installation_request.installation_request" sequence="5" action="action_installation_request"/>
+
+    <record model="ir.ui.view" id="icy_partner_instreq_form">
+        <field name="name">icy.partner.instreq.form</field>
+        <field name="model">res.partner</field>
+	<field name="inherit_id" ref="icy_service.icy_partner_helpdesk_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="via_essent" position="after">
+                <field name="installer"/>
+	    </field>
+        </field>
+    </record>
+
+    </data>
+</openerp>
+
+
+enerp>
+
+

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<record id="service_request_header" model="ir.header_webkit">
+            <field name="footer_html"><![CDATA[
+			<html>
+			   <head>
+			       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+			       <script>
+			           function subst() {
+			           var vars={};
+			           var x=document.location.search.substring(1).split('&');
+			           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+			           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+			           for(var i in x) {
+			           var y = document.getElementsByClassName(x[i]);
+			           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+			               }
+			           }
+			       </script>
+			       <style type="text/css">
+			       
+			           ${css}
+			       </style>
+			   </head>
+			   <body style="border:0; margin: 0;" onload="subst()">
+			       <table class="header" style="width: 100%">
+			           <tr>
+			           		<td style="text-align:left;font-size:10;" width="33%">
+			           		I.C.Y. B.V.</br>
+			           		postbus 193 / P.O. Box 193</br>
+			           		8530 AD Lemmer, The Netherlands</br>
+			           		Houtsaachmole 35 8531 WC Lemmer</br>
+			           		t +31 (0) 881 23 13 21</br>
+			           		f +31 (0) 514 56 42 52
+			           		</td 
+			           		<td style="text-align:left;font-size:10;" width="33%">
+			           		iseewhy@icy.nl</br>
+			           		www.icy.nl</br>
+			           		SNS NL51SNSB0904426270</br>
+			           		BTW NL814935758B01</br>
+			           		K.v.K. 01108447
+			           		</td 
+			           		<td style="text-align:left;font-size:8;" width="33%">
+			           		</td 
+			           </tr>
+			       </table>
+			   </body>
+		   </html>
+			            ]]></field>
+		   <field name="orientation">Portrait</field>
+           <field name="format">A4</field>
+           <field name="html"><![CDATA[
+		   <html>
+			   <head>
+			       <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
+			       <script>
+			           function subst() {
+			           var vars={};
+			           var x=document.location.search.substring(1).split('&');
+			           for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+			           var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+			           for(var i in x) {
+			           var y = document.getElementsByClassName(x[i]);
+			           for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+			               }
+			           }
+			       </script>
+			       <style type="text/css">
+			       
+			           ${css}
+			       </style>
+			   </head>
+		   </html>]]></field>
+		   <field eval="45.0" name="margin_top"/>
+		   <field eval="25.0" name="margin_bottom"/>
+		   <field eval="25.0" name="margin_right"/>
+		   <field name="css"><![CDATA[
+			
+			body, table, td, span, div {
+			    font-family: Helvetica, Arial;
+			}
+			 
+			body {
+			font-family:Arial;
+			font-size:9px; 
+			}
+			
+			
+			.header {
+			    margin-left:0;
+			    text-align:left;
+			    width:300px;
+			    font-size:12;
+			}
+			.title {
+			font-size:16;
+			font-weight: bold;
+			font-family: Helvetica, Arial;
+			}
+			
+			
+			.basic_table{
+			width:90%;
+			text-align:center;
+			border:1px solid lightGrey;
+			border-collapse: collapse;
+			font-family: Helvetica;
+			padding-bottom:20px;
+			}
+			            
+			.basic_table td {
+			border:1px solid lightGrey;
+			font-size:11px;
+			font-family: Helvetica;
+			}
+			
+			.list_table {
+			border-bottom:1px solid black;
+			font-size:11px;
+			padding-top:20px;
+			border-collapse: collapse;
+			font-family: Helvetica;
+			font-weight: bold;
+			width:90%;
+			
+			}
+			.tbl_header{
+			    width:90%;
+			    font-size:10px;
+			   
+			   	font-family: Helvetica;
+			    border:1px solid lightGrey;
+			    border-collapse: collapse;
+			}
+			.tr_bottom_line{
+			    border-bottom: thin solid black;
+			    width:90%;
+			    font-size:12px;
+			    
+			   	font-family: Helvetica;
+			}
+			.tr_bottom_line_dark_grey{
+			    border-top: thin solid #ccc;
+			    width:90%;
+			    font-size:12px;
+			    font-family: Helvetica;
+			}
+			.tr_top{
+			            border-top: 1px solid black;
+			    		width:90%;
+			    		font-size:12px;
+			            font-family: Helvetica;
+			            text-align:left;
+			            }
+	
+			.td_f12{
+			    font-size:12px;
+			    font-family: Helvetica; 
+			    
+			}
+			.shipping_address{
+               margin-top: 10px;
+               margin-bottom: 10px;
+               font-size:11px;
+               text-align:left;
+             }
+		
+		
+			
+			]]></field>
+		   <field name="name">Service_Request Header</field>
+		</record>
+         <report
+            auto="False"
+            id="crm.installatie_aanvraag"
+            model="crm.installation.request"
+            name="crm.installatie_aanvraag"
+            file="icy_inst_req_webkit/report/installation_request.mako"
+            string="Installatie Aanvraag"
+            attachment="(object.name or '').replace('/','')+ '.pdf'"
+            attachment_use="False"
+            multi="True"
+            webkit_header="service_request_header"
+            report_type="webkit"/>
+
+
+    <record model="ir.ui.view" id="view_installation_request_print_form">
+        <field name="name">view.installation.request.print.form</field>
+        <field name="model">crm.installation.request</field>
+		<field name="inherit_id" ref="icy_installation_request.view_installation_request_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+        	<button name="button_in_progress" position="after">
+        		<button name="installation_request_print" string="Print Aanvraag" type="object" states="new,in_progress,problem" groups="base.group_user"/>
+        	</button>
+        </field>
+    </record>
+
+    </data>
+    
+    
+    
+</openerp>
+ta>
+    
+    
+    
+</openerp>

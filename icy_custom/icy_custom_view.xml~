@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_custom_product_form">
+        <field name="name">icy.custom.product.form</field>
+        <field name="model">product.product</field>
+	<field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="type" position="before">
+                <field name="icy_value"/>
+                <field name="icy_package"/>
+                <field name="icy_smd_tht"/>
+                <field name="dtl_description" required="False"/>
+            </field>
+            <field name="description_sale" position="after">
+		<separator string="Productomschrijving CC Offerte"/>
+                <field name="description_sale_cc"/>
+		<separator string="Productomschrijving Offerte"/>
+                <field name="product_description_sale"/>
+		<separator string="Omschrijving Prijslijst"/>
+                <field name="description_pricelist"/>
+		<separator string="Omschrijving Email"/>
+                <field name="description_email"/>
+		<separator string="Omschrijving Telefoon"/>
+                <field name="description_phone"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_custom_bom_form">
+        <field name="name">icy.custom.bom.form</field>
+        <field name="model">mrp.bom</field>
+	<field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@string='Components']/field[@name='bom_lines']/tree/field[@name='product_id']" position="after">
+                <field name="icy_value"/>
+                <field name="icy_package"/>
+                <field name="icy_smd_tht"/>
+            </xpath>
+            <xpath expr="//page[@string='Components']/field[@name='bom_lines']/tree/field[@name='date_start']" position="before">
+                <field name="position"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="icy_custom_supplierinfo_form">
+        <field name="name">icy.custom.supplierinfo.form</field>
+        <field name="model">product.supplierinfo</field>
+	<field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="manufacturer"/>
+                <field name="manufacturer_part_nbr"/>
+                <field name="manufacturer_priority"/>
+            </field>
+        </field>
+    </record>
+
+        <!-- remove kanban view from view mode list -->
+        <record model="ir.actions.act_window" id="base.action_partner_supplier_form">
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+        <record model="ir.actions.act_window" id="base.action_partner_customer_form">
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+    </data>
+</openerp>
+

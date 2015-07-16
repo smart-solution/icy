@@ -1,0 +1,319 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* icy_invoice_webkit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-26 09:07+0000\n"
+"PO-Revision-Date: 2014-08-26 09:07+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: icy_invoice_webkit
+#: view:account.invoice:0
+msgid "Print Pakbon"
+msgstr "Print Pakbon"
+
+#. module: icy_invoice_webkit
+#: field:account.condition_text,name:0
+msgid "Condition summary"
+msgstr "Condition summary"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:55
+msgid "Pakbon voor Draft FACTUUR"
+msgstr "Pakbon voor Draft FACTUUR"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:457
+msgid "Uw betaling dient ten laatste op"
+msgstr "Uw betaling dient ten laatste op"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:102
+msgid "Aantal"
+msgstr "Aantal"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:324
+msgid "Factuurdatum"
+msgstr "Factuurdatum"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:65
+msgid "Pakbon voor Supplier Refund"
+msgstr "Pakbon voor Supplier Refund"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:317
+msgid "Supplier Invoice"
+msgstr "Supplier Invoice"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:72
+msgid "Pakbonnr (fact)"
+msgstr "Pakbonnr (fact)"
+
+#. module: icy_invoice_webkit
+#: view:account.invoice:0
+msgid "Your bottom conditions here"
+msgstr "Your bottom conditions here"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:258
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:296
+msgid "VAT nbr."
+msgstr "BTW nr."
+
+#. module: icy_invoice_webkit
+#: field:account.invoice,text_condition1:0
+msgid "Header condition"
+msgstr "Header condition"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:390
+msgid "Net"
+msgstr "Netto"
+
+#. module: icy_invoice_webkit
+#: selection:account.condition_text,type:0
+msgid "Top condition"
+msgstr "Top condition"
+
+#. module: icy_invoice_webkit
+#: view:account.invoice:0
+msgid "Conditions"
+msgstr "Conditions"
+
+#. module: icy_invoice_webkit
+#: field:account.invoice.line,order_lines:0
+msgid "Order Lines"
+msgstr "Order Lines"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:361
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:103
+msgid "Description"
+msgstr "Omschrijving"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:59
+msgid "Pakbon voor FACTUUR"
+msgstr "Pakbon voor FACTUUR"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:309
+msgid "PRO-FORMA"
+msgstr "PRO-FORMA"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:74
+msgid "Klantnummer"
+msgstr "Klantnummer"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:421
+msgid "Base"
+msgstr "Basis"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:364
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:398
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:420
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:422
+msgid "VAT"
+msgstr "BTW"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:461
+msgid "Gelieve te betalen met volgende mededeling:"
+msgstr "Gelieve te betalen met volgende mededeling:"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:315
+msgid "FACTUUR"
+msgstr "FACTUUR"
+
+#. module: icy_invoice_webkit
+#: field:account.condition_text,type:0
+msgid "type"
+msgstr "type"
+
+#. module: icy_invoice_webkit
+#: field:account.invoice,text_condition2:0
+msgid "Footer condition"
+msgstr "Footer condition"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:362
+msgid "Unit Price"
+msgstr "EH Prijs"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:455
+msgid "Wij verzoeken u bovenstaand bedrag over te maken op bankrekening 904426270"
+msgstr "Wij verzoeken u bovenstaand bedrag over te maken op bankrekening 904426270"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:73
+msgid "Pakbondatum"
+msgstr "Pakbondatum"
+
+#. module: icy_invoice_webkit
+#: field:account.invoice,note2:0
+msgid "Footer"
+msgstr "Footer"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:53
+msgid "Pakbon voor PRO-FORMA"
+msgstr "Pakbon voor PRO-FORMA"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:311
+msgid "Draft FACTUUR"
+msgstr "Draft FACTUUR"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:313
+msgid "Geannulleerde FACTUUR"
+msgstr "Geannulleerde FACTUUR"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:57
+msgid "Pakbon voor Geannulleerde FACTUUR"
+msgstr "Pakbon voor Geannulleerde FACTUUR"
+
+#. module: icy_invoice_webkit
+#: model:ir.model,name:icy_invoice_webkit.model_account_condition_text
+msgid "Invoices conditions"
+msgstr "Facturatie voorwaarden"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:63
+msgid "Pakbon voor Refund Invoice"
+msgstr "Pakbon voor Refund Invoice"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:336
+msgid "Betreft"
+msgstr "Betreft"
+
+#. module: icy_invoice_webkit
+#: field:account.invoice.line,formatted_note:0
+msgid "Formatted Note"
+msgstr "Formatted Note"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:449
+msgid "Bovengenoemd bedrag zal zo spoedig mogelijk worden overgemaakt op het bij ons bekende rekeningnummer "
+msgstr "Bovengenoemd bedrag zal zo spoedig mogelijk worden overgemaakt op het bij ons bekende rekeningnummer "
+
+#. module: icy_invoice_webkit
+#: view:account.invoice:0
+msgid "Your top conditions here"
+msgstr "Your top conditions here"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:319
+msgid "Refund Invoice"
+msgstr "Refund Invoice"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:104
+msgid "Aantal besteld"
+msgstr "Aantal besteld"
+
+#. module: icy_invoice_webkit
+#: model:ir.model,name:icy_invoice_webkit.model_product_template
+msgid "Product Template"
+msgstr "Productsjabloon"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:463
+msgid "Betalingsvoorwaarde"
+msgstr "Betalingsvoorwaarde"
+
+#. module: icy_invoice_webkit
+#: view:account.condition_text:0
+msgid "Invoice condition text"
+msgstr "Invoice condition text"
+
+#. module: icy_invoice_webkit
+#: model:ir.actions.act_window,name:icy_invoice_webkit.action_invoice_condition_form_webkit
+#: model:ir.actions.act_window,name:icy_invoice_webkit.action_invoice_condition_webkit
+msgid "account.condition_text"
+msgstr "account.condition_text"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:101
+msgid "Datum"
+msgstr "Datum"
+
+#. module: icy_invoice_webkit
+#: model:ir.model,name:icy_invoice_webkit.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Factuurregel"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:360
+msgid "Qty"
+msgstr "Aantal"
+
+#. module: icy_invoice_webkit
+#: field:account.invoice,note1:0
+msgid "Header"
+msgstr "Header"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/delivery_slip.mako:61
+msgid "Pakbon voor Supplier Invoice"
+msgstr "Pakbon voor Supplier Invoice"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:363
+msgid "Disc"
+msgstr "Kort"
+
+#. module: icy_invoice_webkit
+#: field:account.condition_text,text:0
+msgid "Condition"
+msgstr "Voorwaarde"
+
+#. module: icy_invoice_webkit
+#: model:ir.model,name:icy_invoice_webkit.model_account_invoice
+msgid "Invoice"
+msgstr "Factuur"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:345
+msgid "Referentie"
+msgstr "Referentie"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:321
+msgid "Supplier Refund"
+msgstr "Supplier Refund"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:365
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:406
+msgid "Total"
+msgstr "Totaal"
+
+#. module: icy_invoice_webkit
+#: report:addons/icy_invoice_webkit/report/account_invoice.mako:457
+msgid "te zijn bijgeschreven op bovenstaand rekeningnummer."
+msgstr "te zijn bijgeschreven op bovenstaand rekeningnummer."
+
+#. module: icy_invoice_webkit
+#: selection:account.condition_text,type:0
+msgid "Bottom condition"
+msgstr "Bottom condition"
+

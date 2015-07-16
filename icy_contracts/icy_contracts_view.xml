@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="icy_contracts_form">
+        <field name="name">icy.contracts.form</field>
+        <field name="model">account.analytic.account</field>
+	<field name="inherit_id" ref="account_analytic_analysis.account_analytic_account_form_form"/> 
+        <field name="arch" type="xml">
+	    <field name="manager_id" position="after">
+		<field name="contract_type_id" required="True" on_change="onchange_contract_type(contract_type_id)"/>
+		<field name="signature_customer_id"/>
+		<field name="address_contract"/>
+	    </field>
+<!--	    <field name="date_start" position="replace"/>
+	    <label name="date" position="replace"/>
+	    <div name="duration" position="replace"/> -->
+            <page name="contract_page" position="before">
+		<page string="Facturatieschema">
+                    <div>
+                        <field name="invoice_schedule"/>
+                        <label for="invoice_schedule"/>
+                    </div>
+<!--		    <field name="date_start" modifiers="{}"/>
+		    <label for="date" string="Einddatum"/>
+		    <div name="duration">
+		        <field name="date" class="oe_inline" modifiers="{}"/>
+		    </div> -->
+		    <group colspan="4" col="2" attrs="{'invisible': [('invoice_schedule','!=',True)]}">
+		        <group>
+			    <field name="contract_pct"/>
+		            <field name="total_yearly_amount"/>
+		            <field name="total_sched_amount"/>
+			    <field name="years"/>
+			    <field name="date_first_invoice"/>
+		        </group>
+		        <group>
+			    <button type="object" string="Herbereken Bedrag" name="recalc_amount" icon="gtk-ok"/>
+			    <button type="object" string="Aanmaken Facturatieschema" name="create_invoice_schedule" icon="gtk-ok"/>
+		        </group>
+                    </group>
+                    <separator string="Producten" attrs="{'invisible': [('invoice_schedule','=',False)]}"/>
+                    <div attrs="{'invisible': [('invoice_schedule','=',False)]}">
+                        <field name="product_ids" context="{'default_analytic_account_id':active_id}">
+                            <tree string="Producten" editable="bottom">
+                                <field name="product_id" on_change="onchange_product(product_id)"/>
+                                <field name="qty_contract"/>
+                                <field name="unit_price"/>
+                            </tree>
+                        </field>
+                    </div>
+		    <newline/>
+                    <separator string="Facturatieschema" attrs="{'invisible': [('invoice_schedule','=',False)]}"/>
+                    <div attrs="{'invisible': [('invoice_schedule','=',False)]}">
+                        <field name="invoice_schedule_line_ids" context="{'default_analytic_account_id':active_id}">
+                            <tree string="Invoice Schedule Lines" editable="bottom">
+                                <field name="scheduled_date"/>
+                                <field name="name"/>
+<!--                                <field name="pct" sum="Pct"/> -->
+                                <field name="amount" sum="Amount"/>
+                                <field name="cost_account_id"/>
+                                <field name="tax_code_id"/>
+                                <field name="invoice_id"/> 
+                            </tree>
+                        </field>
+                    </div>
+		</page>
+            </page>
+        </field>
+    </record>
+
+    <record id="icy_contracts_invoicing_schedule_tree" model="ir.ui.view">
+        <field name="name">icy.contracts.invoicing.schedule.tree</field>
+        <field name="model">account.analytic.schedule.line</field>
+        <field name="arch" type="xml">
+            <tree string="Facturatieschema">
+                <field name="analytic_account_id"/>
+                <field name="scheduled_date"/>
+                <field name="name"/>
+                <field name="amount_max"/>
+                <field name="total_sched_amount"/>
+                <field name="ca_invoiced"/>
+                <field name="remaining_ca"/>
+                <field name="progress_invoice_pct"/>
+                <field name="amount" string="Bedrag Factuur"/>
+                <field name="cost_account_id" invisible="1"/>
+                <field name="tax_code_id" invisible="1"/>
+                <field name="invoice_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="icy_contracts_invoicing_schedule_search" model="ir.ui.view">
+        <field name="name">icy.contracts.invoicing.schedule.search</field>
+        <field name="model">account.analytic.schedule.line</field>
+        <field name="arch" type="xml">
+            <search string="Facturatieschema">
+                <field name="scheduled_date"/>
+                <field name="analytic_account_id"/>
+                <separator/>
+                <filter
+                    string="Facturatie binnen 30 dagen"
+                    domain="[['invoice_id','=',False],['scheduled_date','&lt;=',(context_today() + datetime.timedelta(30)).strftime('%%Y-%%m-%%d')]]"
+                    help="End date is in the next month" />
+                <filter
+                    string="Nog te factureren"
+                    domain="[('invoice_id','=',False)]" />
+                <separator/>
+                <group expand="0" string="Group By...">
+                    <filter string="Contract" domain="[]" context="{'group_by':'analytic_account_id'}"/>
+                    <filter string="Geplande datum" domain="[]" context="{'group_by' : 'scheduled_start'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action Sales/Invoicing/Contract to renew -->
+    <record id="action_icy_contracts_invoicing_schedule" model="ir.actions.act_window">
+        <field name="name">Facturatieschema</field>
+        <field name="res_model">account.analytic.schedule.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="icy_contracts_invoicing_schedule_search"/>
+    </record>
+    <menuitem action="action_icy_contracts_invoicing_schedule" id="menu_action_icy_contracts_invoicing_schedule" sequence="60" parent="base.menu_invoiced"/>
+    <menuitem action="action_icy_contracts_invoicing_schedule" id="menu_action_project_invoicing_schedule" sequence="60" parent="project_timesheet.menu_project_billing"/>
+
+    <record id="view_invoicing_schedule_make_invoice" model="ir.ui.view">
+        <field name="name">Create invoices</field>
+        <field name="model">contract.make.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Maak facturen" version="7.0">
+                <header>
+                    <button name="make_invoices" string="Maak facturen" type="object" class="oe_highlight"  />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </header>
+                <separator colspan="4" string="Do you really want to create the invoice(s)?" />
+                <group>
+                    <field name="invoice_date"/>
+                </group>
+           </form>
+        </field>
+    </record>
+
+    <record id="action_invoicing_schedule_make_invoice" model="ir.actions.act_window">
+        <field name="name">Make Invoices</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">contract.make.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_invoicing_schedule_make_invoice"/>
+        <field name="target">new</field>
+        <field name="multi">True</field>
+    </record>
+
+    <record model="ir.values" id="invoicing_schedule_make_invoice">
+        <field name="model_id" ref="icy_contracts.model_account_analytic_schedule_line" />
+        <field name="name">Make Invoices</field>
+        <field name="key2">client_action_multi</field>
+        <field name="value" eval="'ir.actions.act_window,' + str(ref('action_invoicing_schedule_make_invoice'))" />
+        <field name="key">action</field>
+        <field name="model">account.analytic.schedule.line</field>
+    </record> 
+
+    <record model="ir.ui.view" id="view_contracttexts_tree">
+        <field name="name">view.contracttexts.tree</field>
+        <field name="model">contract.texts</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Teksten Contract">
+                <field name="contract_type_id"/>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="bold"/>
+                <field name="underlined"/>
+                <field name="page_skip_after"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_contracttexts_form">
+        <field name="name">view.contracttexts.form</field>
+        <field name="model">contract.texts</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Teksten Contract">
+		<group>
+                    <field name="contract_type_id"/>
+                    <field name="name"/>
+                    <field name="sequence"/>
+                    <field name="bold"/>
+                    <field name="underlined"/>
+                    <field name="page_skip_after"/>
+		    <field name="product_table"/>
+                    <field name="prefix"/>
+                    <field name="text"/>
+                    <field name="text2"/>
+                    <field name="field_ids" context="{'default_contract_text_id':active_id}" >
+                        <tree string="Labels" editable="bottom">
+                            <field name="label"/>
+                            <field name="dbfield"/>
+                        </tree>
+                    </field>
+		</group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_contracttexts">
+        <field name="name">Teksten Contract</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">contract.texts</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_contracttexts_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_contracttexts_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_contracttexts_tree"/>
+        <field name="act_window_id" ref="action_contracttexts"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_contracttexts_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_contracttexts_form"/>
+        <field name="act_window_id" ref="action_contracttexts"/>
+    </record>
+
+    <menuitem name="Teksten Contract" id="menu_contracttexts_form" action="action_contracttexts" parent = "base.menu_base_config" sequence="210"/>
+
+    <record model="ir.ui.view" id="view_contracttype_tree">
+        <field name="name">view.contracttype.tree</field>
+        <field name="model">contract.type</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Type Contract">
+                <field name="name"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_contracttype_form">
+        <field name="name">view.contracttype.form</field>
+        <field name="model">contract.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Type Contract">
+		<group>
+		<field name="name"/>
+                <field name="type"/>
+		<field name="years"/>
+		<field name="cost_account_id"/>
+		<field name="tax_code_id"/>
+		</group>
+		<group>
+                <field name="note"/>
+		</group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_contracttype">
+        <field name="name">Types Contract</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">contract.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_contracttype_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_contracttype_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_contracttype_tree"/>
+        <field name="act_window_id" ref="action_contracttype"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_contracttype_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_contracttype_form"/>
+        <field name="act_window_id" ref="action_contracttype"/>
+    </record>
+
+    <menuitem name="Types Contract" id="menu_contracttype_form" action="action_contracttype" parent = "base.menu_base_config" sequence="200"/>
+
+    </data>
+</openerp>
+

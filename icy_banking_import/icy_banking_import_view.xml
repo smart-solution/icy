@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record id="account_ing_import_view" model="ir.ui.view">
+      <field name="name">Import ING File</field>
+      <field name="model">account.ing.import</field>
+      <field name="priority">1</field>
+      <field name="arch" type="xml">
+        <form string="Import ING File" version="7.0">
+            <group col="2">
+                <field name="ing_data" filename="ing_fname"/>
+            </group>
+            <footer>
+                <button name="ing_parsing" string="_Import" type="object" class="oe_highlight"/>
+                or
+                <button string="Cancel" class="oe_link" special="cancel"/>
+            </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_account_ing_import" model="ir.actions.act_window">
+      <field name="name">Import ING File</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">account.ing.import</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="view_id" ref="account_ing_import_view"/>
+    </record>
+
+    <record id="account_sns_import_view" model="ir.ui.view">
+      <field name="name">Import SNS File</field>
+      <field name="model">account.sns.import</field>
+      <field name="priority">1</field>
+      <field name="arch" type="xml">
+        <form string="Import SNS File" version="7.0">
+            <group col="2">
+                <field name="sns_data" filename="sns_fname"/>
+            </group>
+            <footer>
+                <button name="sns_parsing" string="_Import" type="object" class="oe_highlight"/>
+                or
+                <button string="Cancel" class="oe_link" special="cancel"/>
+            </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_account_sns_import" model="ir.actions.act_window">
+      <field name="name">Import SNS File</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">account.sns.import</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="view_id" ref="account_sns_import_view"/>
+    </record>
+
+    	<menuitem name="Import ING File" parent="account.menu_finance_bank_and_cash" id="menu_account_ing_import" action="action_account_ing_import" sequence="20"/>
+    	<menuitem name="Import SNS File" parent="account.menu_finance_bank_and_cash" id="menu_account_sns_import" action="action_account_sns_import" sequence="25"/>
+
+    </data>
+</openerp>
+

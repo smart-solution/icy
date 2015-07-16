@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+<!--
+   <menuitem
+       icon="terp-project" id="sustenuto_sale_order_main_menu"
+       name="sustenuto_sale_order" sequence="0"
+       web_icon="images/sustenuto_sale_order.png"
+       web_icon_hover="images/sustenuto_sale_order-hover.png"/>
+
+    <menuitem name="Configuration" id="sustenuto_sale_order_configuration_menu" parent="module_main_menu"/>
+    <menuitem name="sustenuto_sale_order" id="module_menu" parent="module_main_menu"  sequence="5"/>
+
+-->
+   <!--
+       sustenuto_sale_order Views 
+   -->
+
+<!--
+    <record model="ir.ui.view" id="view_sustenuto_project_task_1_form">
+        <field name="name">view.sustenuto_project_task_1.form</field>
+        <field name="model">project.task</field>
+	<field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+		<field name="sale_line_id" position="before">
+			<field name="sale_order_id"/>
+			<field name="procurement_id" string="Sale Order Line"/>
+		</field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sustenuto_project_task_2_form">
+        <field name="name">view.sustenuto_project_task_2.form</field>
+        <field name="model">project.task</field>
+	<field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+		<field name="sale_line_id" position="replace">
+		</field>
+        </field>
+    </record>
+-->
+    <record model="ir.ui.view" id="view_sustenuto_sale_order_1_form">
+        <field name="name">view.sustenuto_sale_order_1.form</field>
+        <field name="model">sale.order</field>
+	<field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+		<field name="product_packaging" position="after">
+			<field name="earned_rate" visible="1"/>
+		</field>
+        </field>
+    </record>
+
+<!--
+    <record model="ir.ui.view" id="view_sustenuto_project_1_tree">
+            <field name="name">view.sustenuto_project_1.tree</field>
+            <field name="model">project.project</field>
+            <field name="type">tree</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree colors="red:date and (date&lt;current_date) and (state == 'open');blue:state in ('draft','pending');grey: state in ('close','cancelled')" string="Projects">
+                    <field name="sequence" invisible="1"/>
+                    <field name="name" string="Project Name"/>
+                    <field name="planned_hours" widget="float_time"/>
+                    <field name="total_hours" widget="float_time"/>
+                    <field name="effective_hours" widget="float_time"/>
+                    <field name="remaining_hours" widget="float_time"/>
+                    <field name="progress_rate" widget="progressbar"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sustenuto_project">
+        <field name="name">Project Dashboard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.project</field>
+        <field name="view_type">tree</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sustenuto_project_1_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sustenuto_project_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sustenuto_project_1_tree"/>
+        <field name="act_window_id" ref="action_sustenuto_project"/>
+    </record>
+
+    <menuitem name="Project Dashboard" id="menu_project_dashboard_tree" action = "view_sustenuto_project" parent="project.menu_project_management" sequence="3"/>
+-->
+
+<!--
+    <record model="ir.ui.view" id="view_sustenuto_project_1_form">
+        <field name="name">view.sustenuto_project_1.form</field>
+        <field name="model">project.project</field>
+	<field name="inherit_id" ref="project.edit_project"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+		<field name="warn_customer" position="after">
+			<newline/>
+			<field name="budget_int_services"/>
+			<field name="budget_ext_services"/>
+			<field name="budgeted_costs"/>
+		</field>
+        </field>
+    </record>
+-->
+<!--
+
+    <record model="ir.ui.view" id="view_sustenuto_crm_lead_1_form">
+        <field name="name">view.sustenuto_crm_lead_1.form</field>
+        <field name="model">crm.lead</field>
+	<field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="sustenu">
+		<field name="name"/>
+		<field name="code"/>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_sustenuto_sale_order_tree">
+        <field name="name">view.sustenuto_sale_order.tree</field>
+        <field name="model">sustenuto_sale_order</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="sustenuto_sale_order">
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_sustenuto_sale_order_form">
+        <field name="name">view.sustenuto_sale_order.form</field>
+        <field name="model">sustenuto_sale_order</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="sustenuto_sale_order">
+		<field name="name"/>
+		<field name="code"/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sustenuto_sale_order">
+        <field name="name">All sustenuto_sale_order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sustenuto_sale_order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_sustenuto_sale_order_tree"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sustenuto_sale_order_tree_view">
+        <field name="sequence">10</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sustenuto_sale_order_tree"/>
+        <field name="act_window_id" ref="action_sustenuto_sale_order"/>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_sustenuto_sale_order_form_view">
+        <field name="sequence">20</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sustenuto_sale_order_form"/>
+        <field name="act_window_id" ref="action_sustenuto_sale_order"/>
+    </record>
+
+    <menuitem name="All sustenuto_sale_order" id="menu_module" parent="module_menu" action="action_module" sequence="5"/>
+
+    <record model="ir.ui.view" id="view_campaign_proposition_segment_segmentation_form_inherit">
+        <field name="name">view.campaign.proposition.segment.segmentation.form</field>
+        <field name="model">dm.campaign.proposition</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="dm.view_campaign_proposition_form"/>        
+        <field name="arch" type="xml">
+            <xpath expr="/form/notebook/page/field[@name='segment_ids']/form/notebook" position="inside">
+                <page string="Extraction">
+                    <field name="segmentation_id" string="Segmentation"/>
+                    <field name="use_census"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+        <record id="view_product_search_nineit" model="ir.ui.view">
+            <field name="name">product.product.search.nineit</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view" />
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <xpath expr="/search/field[@name='categ_id']" position='after'>
+                        <field name="nineit_sku"/>
+                        <field name="nineit_barcode"/>
+                        <field name="nineit_import_file_id" string="Supplier"/>
+                </xpath>
+            </field>
+        </record>
+
+    <act_window name="Ship Sale Orders"
+    res_model="sale.order"
+    src_model="res.partner"
+    view_type="form"
+    view_mode="tree,form"
+    id="act_tresco_ship_sale_orders"
+    context="{'ship_id':active_id}"
+    domain="[('ship_id','=',active_id)]"
+    />
+
+
+-->
+
+    </data>
+</openerp>

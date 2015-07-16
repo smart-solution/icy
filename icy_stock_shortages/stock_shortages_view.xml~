@@ -1,0 +1,271 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+    <record model="ir.ui.view" id="stock_shortage_product_tree">
+        <field name="name">stock.shortage.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <tree string="Shortages">
+                <field name="default_code"/>
+                <field name="name"/>
+                <field name="supply_method"/>
+                <field name="main_supplier_id"/>
+                <field name="qty_available"/>
+                <field name="product_shortage" select="1" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="stock_shortage_product_form">
+        <field name="name">stock.shortage.product.form</field>
+        <field name="model">product.product</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Product Shortages">
+		<group colspan="4" col="2">
+		    <group>
+                    	<field name="name" readonly="True"/>
+                    	<field name="default_code" readonly="True"/>
+			<field name="supply_method" readonly="True"/>
+	                <field name="main_supplier_id" attrs="{'invisible': [('supply_method','!=', 'buy')]}"/>
+                    	<field name="qty_available" readonly="True"/>
+                    	<field name="minimum_stock" readonly="True"/>
+                    	<field name="default_order_qty" readonly="True"/>
+                    	<field name="multiple_order_qty" readonly="True"/>
+	                <field name="seller_delay" readonly="True" attrs="{'invisible': [('supply_method','!=', 'buy')]}"/>
+	                <field name="produce_delay" readonly="True" attrs="{'invisible': [('supply_method','==', 'buy')]}"/>
+			<field name="qty_to_order" required="True"/>
+			<field name="date_to_order" required="True"/>
+			<field name="all_partner_id" attrs="{'invisible': [('supply_method','!=', 'buy')]}"/>
+			<field name="seller_ids" attrs="{'invisible': [('supply_method','!=', 'buy')]}" readonly="True"/>
+<!--	                <field name="qty_draft_po" attrs="{'invisible': [('supply_method','!=', 'buy')]}"/> -->
+		    </group>
+		    <group>
+		    <group colspan="2">
+                        <button name="create_wo" string="Create Manufacturing Order" icon="terp-mrp" type="object" attrs="{'invisible': [('supply_method','==', 'buy')]}"/>
+		    </group>
+		    <group colspan="2">
+                        <button name="create_pr" string="Create Purchase Requisition" icon="terp-mrp" type="object" attrs="{'invisible': [('supply_method','!=', 'buy')]}"/>
+                        <button name="create_pol" string="Create Purchase Order Line" icon="terp-mrp" type="object" attrs="{'invisible': [('supply_method','!=', 'buy')]}"/>
+		    </group>
+		    <group colspan="2" attrs="{'invisible': [('supply_method','!=', 'buy')]}">
+			<separator string="Existing Draft POs Product" colspan="2"/>
+                    	<field name="purchase_order_line_ids" nolabel="1" colspan="2" context="{'default_product_id': active_id}" readonly="True">
+			    <tree string="Existing Draft POs Product">
+				<field name="partner_id"/>
+			        <field name="order_id"/>
+			        <field name="date_order"/>
+			        <field name="date_planned"/>
+				<field name="product_qty"/> 
+			        <field name="state" select="1"/>
+			    </tree>
+			</field>
+<!-- 			<separator string="Existing Draft POs Supplier" colspan="2"/>
+                    	<field name="seller_purchase_order_ids" nolabel="1" colspan="2" context="{'default_partner_id': main_supplier_id}" readonly="True">
+			    <tree string="Existing Draft POs Supplier">
+			        <field name="name"/>
+			        <field name="date_order"/>
+			        <field name="state" select="1"/>
+			    </tree>
+			</field> -->
+			<separator string="Existing Purchase Requisitions" colspan="2"/>
+                    	<field name="purchase_requisition_ids" nolabel="1" colspan="2" context="{'default_line_product_id': active_id}" readonly="True">
+			    <tree string="Existing Draft POs">
+			        <field name="name"/>
+			        <field name="date_start"/>
+			        <field name="line_product_qty"/>
+			        <field name="state" select="1"/>
+			        <field name="exclusive"/>
+			    </tree>
+			</field>
+		    </group>
+		    <group colspan="2" attrs="{'invisible': [('supply_method','!=', 'produce')]}">
+			<separator string="Existing Manufacturing Orders" colspan="2"/>
+                    	<field name="manufacturing_order_ids" nolabel="1" colspan="2" context="{'default_product_id': active_id}" readonly="True">
+			    <tree string="Existing Manufacturing Orders">
+			        <field name="name"/>
+			        <field name="date_planned" widget="date"/>
+			        <field name="product_qty"/>
+			        <field name="state" select="1"/>
+			    </tree>
+			</field>
+		    </group>
+		    </group>
+		</group>
+                <group colspan="4">
+		    <separator string="Stock Moves" colspan="4"/>
+		    <field name="move_ids" nolabel="1" context="{'default_product_id':active_id}" readonly="True">
+			<tree string="Shortages" colors="red:(running_availability&lt;0);blue:(running_availability&lt;minimum_stock)">
+<!--			    <field name="date_expected" widget="date"/> -->
+			    <field name="date" widget="date"/>
+			    <field name="name"/>
+			    <field name="disp_partner_id"/>
+			    <field name="disp_source_location"/>
+			    <field name="disp_dest_location"/>
+			    <field name="state"/>
+			    <field name="product_qty"/>
+			    <field name="running_availability"/> 
+			    <field name="valid_shortage" select="1"/>
+			    <field name="minimum_stock" invisible="True"/>
+			</tree>
+		    </field>
+		</group>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="stock_shortage_search_form">
+        <field name="name">stock.shortage.filter.form</field>
+        <field name="model">product.product</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Search Product">                 
+		<group expand="0" string="Selection...">
+                    <field name="name" select='1'/>
+                    <field name="default_code" select='1'/>
+                    <field name="main_supplier_id" select='1'/>
+		</group>
+                <separator/>
+                <filter string="Shortage" name="shortage" domain="[['product_shortage','=',True]]"/>
+                <filter string="Purchase Shortages" domain="[['supply_method','=','buy'],['product_shortage','=',True]]"/>
+                <filter string="Manufacture Shortages" domain="[['supply_method','=','produce'],['product_shortage','=',True]]"/>
+                <separator/>
+                <group expand="0" string="Group By...">
+                    <filter string="Supply Method" context="{'group_by':'supply_method'}"/>
+                    <filter string="Main Supplier" context="{'group_by':'main_supplier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="stock_shortage_product_action">
+        <field name="sequence" eval="20"/>
+	<field name="name">Shortages</field>
+        <field name="res_model">product.product</field>
+	<field name="type">ir.actions.act_window</field>
+	<field name="view_type">form</field>
+	<field name="view_mode">tree,form</field>
+	<field name="view_id" ref="stock_shortage_product_tree"/>
+	<field name="search_view_id" ref="stock_shortage_search_form"/>
+        <field name="act_window_id" ref="stock_shortage_product_form"/>
+        <field name="context">{"search_default_shortage":1}</field> 
+    </record> 
+    <record model="ir.actions.act_window.view" id="stock_shortage_product_form_action"> 
+        <field name="sequence" eval="22"/>
+	<field name="view_mode">form</field>
+	<field name="view_id" ref="stock_shortage_product_form"/>
+	<field name="act_window_id" ref="stock_shortage_product_action"/>
+    </record> 
+    <record model="ir.actions.act_window.view" id="stock_shortage_product_tree_action"> 
+        <field name="sequence" eval="20"/>
+	<field name="view_mode">tree</field>
+	<field name="view_id" ref="stock_shortage_product_tree"/>
+	<field name="act_window_id" ref="stock_shortage_product_action"/>
+    </record> 
+
+    <record id="view_compute_schedulers_wizard" model="ir.ui.view">
+        <field name="name">Recalculate Shortages</field>
+        <field name="model">product.shortage.compute.all</field>
+        <field name="arch" type="xml">
+            <form string="Recalculate Shortages" version="7.0">
+                <footer>
+                    <button name="recalc_shortage" string="Run Recalculate" type="object"  class="oe_highlight"  />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window name="Run Schedulers"
+            res_model="product.shortage.compute.all"
+            src_model="product.product"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_recalc_shortage"/>
+
+    <menuitem name="Shortages" id="menu_shortages" action="stock_shortage_product_action" parent="stock.menu_traceability" sequence="4"/> 
+    <menuitem name="Recalculate Shortage" action="action_recalc_shortage" id="menu_recalc_shortage" parent="stock.menu_traceability" sequence="5"/> 
+
+    <record model="ir.ui.view" id="shortage_mrp_bom_tree">
+	<field name="name">shortage.mrp.bom.tree</field>
+	<field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+        <field name="arch" type="xml">
+            <data>
+	        <field name="product_qty" position="after">
+		    <field name="qty_available"/>
+		    <field name="qty_virtual"/>
+	        </field>
+            </data>
+	</field>
+    </record> 
+
+    <record model="ir.ui.view" id="shortage_std_product_form">
+	<field name="name">shortage.std.product.form</field>
+	<field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//page[@string='Procurements']/group[@name='procurement']/group[@name='general']/field[@name='cost_method']" position="before">
+		    <field name="default_order_qty"/>
+		    <field name="multiple_order_qty"/>
+	        </xpath>
+            </data>
+	</field>
+    </record> 
+
+    <record model="ir.ui.view" id="shortage_purchase_order_form">
+	<field name="name">shortage.purchase.order.form</field>
+	<field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <data>
+	        <field name="partner_id" position="after">
+		    <field name="product_id" invisible="1"/>
+	        </field>
+	        <field name="order_line" position="attributes">
+		    <attribute name="context">{'default_product_id': product_id}</attribute>
+	        </field>
+            </data>
+	</field>
+    </record> 
+
+    <record model="ir.ui.view" id="stock_shortage_location_search_form">
+        <field name="name">stock.shortage.location.filter.form</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_search"/>
+        <field name="arch" type="xml">
+            <field name="location_id" position="after">                 
+                <separator/>
+                <group expand="0" string="Group By...">
+                    <filter string="Parent Location" context="{'group_by':'location_id'}"/>
+                </group>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="stock_shortage_location_tree">
+        <field name="name">stock.shortage.location.tree</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_tree2"/>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="after">                 
+		<field name="location_id" invisible="True"/>
+            </field>
+            <field name="stock_real" position="replace">                 
+		<field name="stock_real" invisible="'product_id' not in context" sum="Real Stock"/>
+            </field>
+            <field name="stock_virtual" position="replace">                 
+		<field name="stock_virtual" invisible="'product_id' not in context" sum="Virtual Stock"/>
+            </field>
+        </field>
+    </record>
+
+    </data>
+</openerp>
+
+
